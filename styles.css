@@ -4,22 +4,42 @@
   line-height: 1.5;
 }
 
+/* Skema-specifik styling */
+.enhanced-schedule {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.enhanced-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
 .enhanced-table {
   border-collapse: collapse;
   width: 100%;
   margin: 10px 0;
+  background-color: #fff;
 }
 
 .enhanced-table td,
 .enhanced-table th {
-  padding: 8px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid #dee2e6;
 }
 
 .enhanced-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
 }
 
+/* Knap styling */
 #lectio-enhancer-btn {
   background-color: #4caf50;
   color: white;
@@ -35,4 +55,141 @@
 #lectio-enhancer-btn:hover {
   background-color: #45a049;
   transform: scale(1.05);
+}
+
+/* Responsivt design */
+@media screen and (max-width: 768px) {
+  .enhanced-schedule {
+    padding: 10px;
+  }
+
+  .enhanced-table {
+    font-size: 14px;
+  }
+}
+
+/* Dark mode styles */
+.dark-mode {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .ls-master-container1,
+.dark-mode .ls-content-container {
+  background-color: #1a1a1a !important;
+}
+
+.dark-mode .ls-master-header,
+.dark-mode .enhanced-header {
+  background-color: #2d2d2d !important;
+  border-color: #3d3d3d !important;
+}
+
+.dark-mode .enhanced-table {
+  background-color: #2d2d2d !important;
+}
+
+.dark-mode .enhanced-table td,
+.dark-mode .enhanced-table th {
+  border-color: #3d3d3d !important;
+}
+
+.dark-mode .enhanced-table tr:nth-child(even) {
+  background-color: #333333 !important;
+}
+
+.dark-mode a {
+  color: #66b3ff !important;
+}
+
+.dark-mode #lectio-enhancer-btn {
+  background-color: #4a4a4a;
+}
+
+.dark-mode #lectio-enhancer-btn:hover {
+  background-color: #5a5a5a;
+}
+
+/* Skemabrikker i dark mode */
+.dark-mode .s2skemabrik {
+  background-color: #2d2d2d !important;
+  border: 1px solid #3d3d3d !important;
+}
+
+.dark-mode .s2weekHeader td {
+  background-color: #333333 !important;
+}
+
+.dark-mode .s2dayHeader td {
+  background-color: #2d2d2d !important;
+}
+
+/* Bevar knappens synlighed i begge modes */
+#lectio-enhancer-btn {
+  background-color: #4caf50;
+  color: white !important;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+#lectio-enhancer-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Holdfarver - Light mode */
+.class-dt3h {
+  background-color: #ffebee !important; /* Lyserød */
+  border-left: 4px solid #ef5350 !important;
+}
+
+.class-dteux3h {
+  background-color: #e3f2fd !important; /* Lyseblå */
+  border-left: 4px solid #42a5f5 !important;
+}
+
+.class-dt2h {
+  background-color: #e8f5e9 !important; /* Lysegrøn */
+  border-left: 4px solid #66bb6a !important;
+}
+
+.class-dt1h {
+  background-color: #fff3e0 !important; /* Orange */
+  border-left: 4px solid #ffa726 !important;
+}
+
+/* Holdfarver - Dark mode */
+.dark-mode .class-dt3h {
+  background-color: #4a2c2c !important;
+  border-left: 4px solid #ef5350 !important;
+}
+
+.dark-mode .class-dteux3h {
+  background-color: #1a365d !important;
+  border-left: 4px solid #42a5f5 !important;
+}
+
+.dark-mode .class-dt2h {
+  background-color: #1b4d1b !important;
+  border-left: 4px solid #66bb6a !important;
+}
+
+.dark-mode .class-dt1h {
+  background-color: #4d3319 !important;
+  border-left: 4px solid #ffa726 !important;
+}
+
+/* Hover effekt på skemabrikker */
+.s2skemabrik {
+  transition: transform 0.2s ease;
+}
+
+.s2skemabrik:hover {
+  transform: scale(1.02);
+  z-index: 1;
 }

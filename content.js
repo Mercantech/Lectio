@@ -1,39 +1,96 @@
+function enhanceSchedulePage() {
+  // Tjek om vi er på skema-siden
+  if (window.location.href.includes("SkemaNy.aspx")) {
+    // Find skema-relaterede elementer
+    const scheduleContainer = document.querySelector(".ls-content-container");
+    if (scheduleContainer) {
+      scheduleContainer.classList.add("enhanced-schedule");
+    }
+
+    // Find alle tabeller i skemaet
+    const tables = document.querySelectorAll("table");
+    tables.forEach((table) => {
+      table.classList.add("enhanced-table");
+    });
+
+    // Tilføj styling til overskrifter
+    const headers = document.querySelectorAll(".ls-master-header");
+    headers.forEach((header) => {
+      header.classList.add("enhanced-header");
+    });
+
+    // Tilføj farver til holdene
+    applyClassColors();
+  }
+}
+
+// Tilføj en funktion til at håndtere dark mode
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+
+  // Gem brugerens præference
+  const isDarkMode = document.body.classList.contains("dark-mode");
+  localStorage.setItem("lectioEnhancerDarkMode", isDarkMode);
+}
+
 function createEnhancerButton() {
-  // Opret knappen
   const button = document.createElement("button");
-  button.innerHTML = "Lectio Enhancer";
   button.id = "lectio-enhancer-btn";
 
-  // Tilføj styling til knappen
+  // Sæt initial tekst baseret på current mode
+  const isDarkMode = document.body.classList.contains("dark-mode");
+  button.innerHTML = isDarkMode ? "Light Mode" : "Dark Mode";
+
   button.style.position = "fixed";
   button.style.bottom = "20px";
   button.style.right = "20px";
   button.style.zIndex = "9999";
 
-  // Tilføj click event
   button.addEventListener("click", () => {
-    console.log("Lectio Enhancer blev klikket!");
-    console.log("Nuværende side:", window.location.href);
+    toggleDarkMode();
+    // Opdater knappens tekst
+    button.innerHTML = document.body.classList.contains("dark-mode")
+      ? "Light Mode"
+      : "Dark Mode";
   });
 
-  // Tilføj knappen til siden
   document.body.appendChild(button);
 }
 
-// Hovedfunktion der køres når siden indlæses
 function enhanceLectio() {
-  // Tilføj bedre styling til siden
   document.body.classList.add("lectio-enhanced");
 
-  // Tilføj vores nye knap
-  createEnhancerButton();
-
-  // Eksempel på forbedring: Gør tabeller mere læsbare
-  const tables = document.getElementsByTagName("table");
-  for (let table of tables) {
-    table.classList.add("enhanced-table");
+  // Check om brugeren tidligere har valgt dark mode
+  const savedDarkMode = localStorage.getItem("lectioEnhancerDarkMode");
+  if (savedDarkMode === "true") {
+    document.body.classList.add("dark-mode");
   }
+
+  createEnhancerButton();
+  enhanceSchedulePage();
 }
 
-// Start forbedringerne når siden er indlæst
-document.addEventListener("DOMContentLoaded", enhanceLectio);
+// Vent på at siden er helt indlæst
+window.addEventListener("load", enhanceLectio);
+
+// Tilføj denne nye funktion
+function applyClassColors() {
+  // Find alle skemabrikker
+  const elements = document.querySelectorAll(".s2skemabrik");
+
+  elements.forEach((element) => {
+    const text = element.textContent.toLowerCase();
+
+    // Tilføj klasser baseret på holdnavn
+    if (text.includes("dt3h")) {
+      element.classList.add("class-dt3h");
+    } else if (text.includes("dteux3h")) {
+      element.classList.add("class-dteux3h");
+    } else if (text.includes("dt2h")) {
+      element.classList.add("class-dt2h");
+    } else if (text.includes("dt1h")) {
+      element.classList.add("class-dt1h");
+    }
+    // Tilføj flere holdtyper efter behov
+  });
+}
