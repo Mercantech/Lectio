@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Lectio Enhancer",
+  "version": "1.0",
+  "description": "Gør Lectio bedre for både elever og undervisere",
+  "permissions": ["activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.lectio.dk/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

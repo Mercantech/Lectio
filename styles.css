@@ -1,0 +1,38 @@
+/* Grundlæggende forbedringer */
+.lectio-enhanced {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.enhanced-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.enhanced-table td,
+.enhanced-table th {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.enhanced-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#lectio-enhancer-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+#lectio-enhancer-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
