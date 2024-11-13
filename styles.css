@@ -186,10 +186,20 @@
 
 /* Hover effekt på skemabrikker */
 .s2skemabrik {
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .s2skemabrik:hover {
   transform: scale(1.02);
   z-index: 1;
+  filter: brightness(0.95);
+}
+
+/* Dark mode tilpasninger */
+.dark-mode .s2skemabrik {
+  filter: brightness(0.7);
+}
+
+.dark-mode .s2skemabrik:hover {
+  filter: brightness(0.8);
 }

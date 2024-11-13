@@ -6,6 +6,9 @@ function enhanceSchedulePage() {
     if (scheduleContainer) {
       saveCourses();
       scheduleContainer.classList.add("enhanced-schedule");
+
+      // Tilføj denne linje
+      applyGroupColors();
     }
 
     // Find alle tabeller i skemaet
@@ -136,10 +139,88 @@ function saveCourses() {
   });
 }
 
-// Tilføj denne kode i bunden af content.js
+// Tilføj disse hjælpefunktioner
+function generateRandomColor() {
+  // Generer lysere farver ved at starte fra midten af farvespektret
+  const hue = Math.floor(Math.random() * 360);
+  return `hsl(${hue}, 70%, 85%)`; // Høj lightness for lysere farver
+}
+
+function generateBorderColor(backgroundColor) {
+  // Konverter til mørkere version af samme farve til border
+  return backgroundColor.replace("85%", "45%");
+}
+
+function applyGroupColors() {
+  // Hent eller generer farver for hver gruppe
+  chrome.storage.sync.get("courseGroupColors", (data) => {
+    let groupColors = data.courseGroupColors || {};
+    let hasNewColors = false;
+
+    // Find alle unikke grupper og tildel farver
+    document.querySelectorAll(".s2skemabrik").forEach((element) => {
+      const courseElements = element.querySelectorAll(
+        '[data-lectiocontextcard^="HE"]'
+      );
+
+      courseElements.forEach((course) => {
+        const courseName = course.textContent.trim();
+        const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+
+        if (subjectMatch) {
+          const subject = subjectMatch[1].toUpperCase();
+
+          // Hvis gruppen ikke har en farve, generer en ny
+          if (!groupColors[subject]) {
+            const backgroundColor = generateRandomColor();
+            const borderColor = generateBorderColor(backgroundColor);
+            groupColors[subject] = {
+              background: backgroundColor,
+              border: borderColor,
+            };
+            hasNewColors = true;
+          }
+
+          // Anvend farver på skemabrikken
+          element.style.backgroundColor = groupColors[subject].background;
+          element.style.borderLeft = `4px solid ${groupColors[subject].border}`;
+        }
+      });
+    });
+
+    // Gem nye farver hvis der blev genereret nogen
+    if (hasNewColors) {
+      chrome.storage.sync.set({ courseGroupColors: groupColors });
+    }
+  });
+}
+
+// Tilføj message listener for farve-opdateringer
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "updateCourses") {
     saveCourses();
+    applyGroupColors(); // Generer nye farver ved opdatering
+    sendResponse({ success: true });
+  }
+  if (request.action === "updateColors") {
+    // Opdater farverne med de nye værdier
+    const elements = document.querySelectorAll(".s2skemabrik");
+    elements.forEach((element) => {
+      const courseElements = element.querySelectorAll(
+        '[data-lectiocontextcard^="HE"]'
+      );
+      courseElements.forEach((course) => {
+        const courseName = course.textContent.trim();
+        const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+        if (subjectMatch) {
+          const subject = subjectMatch[1].toUpperCase();
+          if (request.colors[subject]) {
+            element.style.backgroundColor = request.colors[subject].background;
+            element.style.borderLeft = `4px solid ${request.colors[subject].border}`;
+          }
+        }
+      });
+    });
     sendResponse({ success: true });
   }
 });
