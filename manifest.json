@@ -4,6 +4,13 @@
   "version": "1.0",
   "description": "Gør Lectio bedre for både elever og undervisere",
   "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["*://*.lectio.dk/*"],

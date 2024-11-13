@@ -4,6 +4,7 @@ function enhanceSchedulePage() {
     // Find skema-relaterede elementer
     const scheduleContainer = document.querySelector(".ls-content-container");
     if (scheduleContainer) {
+      saveCourses();
       scheduleContainer.classList.add("enhanced-schedule");
     }
 
@@ -94,3 +95,51 @@ function applyClassColors() {
     // Tilføj flere holdtyper efter behov
   });
 }
+
+// Tilføj denne funktion til content.js
+function saveCourses() {
+  // Opret et objekt til at holde grupperede kurser
+  const courseGroups = {};
+
+  const elements = document.querySelectorAll(".s2skemabrik");
+
+  elements.forEach((element) => {
+    const courseElements = element.querySelectorAll(
+      '[data-lectiocontextcard^="HE"]'
+    );
+
+    courseElements.forEach((course) => {
+      const courseName = course.textContent.trim();
+      // Find fagkoden (sidste 2-3 bogstaver, fx MA, DA, ke)
+      const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+
+      if (subjectMatch) {
+        const subject = subjectMatch[1].toUpperCase();
+        if (!courseGroups[subject]) {
+          courseGroups[subject] = new Set();
+        }
+        courseGroups[subject].add(courseName);
+      }
+    });
+  });
+
+  // Konverter Sets til arrays før gemning
+  const groupedCourses = Object.fromEntries(
+    Object.entries(courseGroups).map(([subject, courses]) => [
+      subject,
+      Array.from(courses),
+    ])
+  );
+
+  chrome.storage.sync.set({ lectioEnhancerCourses: groupedCourses }, () => {
+    console.log("Grupperede kurser gemt:", groupedCourses);
+  });
+}
+
+// Tilføj denne kode i bunden af content.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "updateCourses") {
+    saveCourses();
+    sendResponse({ success: true });
+  }
+});
