@@ -157,9 +157,9 @@ async function displayColorPickers() {
       const label = document.createElement("label");
       label.textContent = `${subject} Kurser`;
 
-      const colorPreview = document.createElement("div");
-      colorPreview.className = "color-preview";
-
+      const colorPicker = document.createElement("input");
+      colorPicker.type = "color";
+      colorPicker.className = "color-preview-picker";
       const currentColor =
         groupColors[subject]?.background || generateRandomColor();
       let hexColor = currentColor;
@@ -169,10 +169,6 @@ async function displayColorPickers() {
         hexColor = hslToHex(h, s, l);
       }
 
-      colorPreview.style.backgroundColor = currentColor;
-
-      const colorPicker = document.createElement("input");
-      colorPicker.type = "color";
       colorPicker.value = hexColor;
       colorPicker.dataset.subject = subject;
 
@@ -184,16 +180,10 @@ async function displayColorPickers() {
       randomButton.addEventListener("click", () => {
         const newColor = generateRandomColor();
         const newHex = hslToHex(...Object.values(parseHSL(newColor)));
-        colorPreview.style.backgroundColor = newColor;
         colorPicker.value = newHex;
       });
 
-      colorPicker.addEventListener("input", (e) => {
-        colorPreview.style.backgroundColor = e.target.value;
-      });
-
       colorGroup.appendChild(label);
-      colorGroup.appendChild(colorPreview);
       colorGroup.appendChild(colorPicker);
       colorGroup.appendChild(randomButton);
       groupColorsList.appendChild(colorGroup);
