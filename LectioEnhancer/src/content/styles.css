@@ -203,3 +203,53 @@
 .dark-mode .s2skemabrik:hover {
   filter: brightness(0.8);
 }
+
+.s2infoHeader {
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.s2infoHeader.expanded {
+  max-height: 500px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.info-toggle-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.info-toggle-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.info-toggle-btn::before {
+  content: "▶";
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.info-toggle-btn.expanded::before {
+  transform: rotate(90deg);
+}
+
+/* Tilføj dark mode support for knappen */
+.dark-mode .info-toggle-btn {
+  color: #ccc;
+}
+
+.dark-mode .info-toggle-btn:hover {
+  background-color: #333;
+}
