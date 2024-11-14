@@ -5,21 +5,28 @@
   "description": "Gør Lectio bedre for både elever og undervisere",
   "permissions": ["activeTab", "storage"],
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "src/ui/popup.html",
     "default_icon": {
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "48": "src/icons/icon48.png",
+      "128": "src/icons/icon128.png"
     }
   },
   "content_scripts": [
     {
       "matches": ["*://*.lectio.dk/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "js": ["src/content/content.js"],
+      "css": ["src/content/styles.css"],
+      "type": "module"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/ui/components/*", "src/ui/utils/*", "src/common/*"],
+      "matches": ["*://*.lectio.dk/*"]
     }
   ],
   "icons": {
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "48": "src/icons/icon48.png",
+    "128": "src/icons/icon128.png"
   }
 }

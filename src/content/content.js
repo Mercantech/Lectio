@@ -101,8 +101,10 @@ function applyClassColors() {
 
 // Tilføj denne funktion til content.js
 function saveCourses() {
-  // Opret et objekt til at holde grupperede kurser
-  const courseGroups = {};
+  const courseGroups = {
+    // Initialiser "ANDRE" kategorien for hvis de ikke passer i en
+    ANDRE: new Set(),
+  };
 
   const elements = document.querySelectorAll(".s2skemabrik");
 
@@ -113,7 +115,6 @@ function saveCourses() {
 
     courseElements.forEach((course) => {
       const courseName = course.textContent.trim();
-      // Find fagkoden (sidste 2-3 bogstaver, fx MA, DA, ke)
       const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
 
       if (subjectMatch) {
@@ -122,6 +123,9 @@ function saveCourses() {
           courseGroups[subject] = new Set();
         }
         courseGroups[subject].add(courseName);
+      } else {
+        // Hvis der ikke er et match, tilføj til "ANDRE" kategorien
+        courseGroups.ANDRE.add(courseName);
       }
     });
   });
@@ -134,9 +138,12 @@ function saveCourses() {
     ])
   );
 
-  chrome.storage.sync.set({ lectioEnhancerCourses: groupedCourses }, () => {
-    console.log("Grupperede kurser gemt:", groupedCourses);
-  });
+  // Fjern "ANDRE" kategorien hvis den er tom
+  if (groupedCourses.ANDRE.length === 0) {
+    delete groupedCourses.ANDRE;
+  }
+
+  chrome.storage.sync.set({ lectioEnhancerCourses: groupedCourses });
 }
 
 // Tilføj disse hjælpefunktioner

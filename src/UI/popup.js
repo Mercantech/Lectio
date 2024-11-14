@@ -9,6 +9,7 @@ function setupMenu() {
     main: document.getElementById("mainSection"),
     colors: document.getElementById("colorSection"),
     settings: document.getElementById("settingsSection"),
+    admin: document.getElementById("adminSection"),
   };
 
   // Tilføj opdateringsknap
@@ -48,6 +49,10 @@ function setupMenu() {
         // Hvis farve-sektionen er valgt, initialiser farve-vælgerne
         if (targetSection === "colors") {
           displayColorPickers();
+        }
+
+        if (targetSection === "admin") {
+          displayStorageData();
         }
       }
     });
@@ -142,11 +147,9 @@ async function displayColorPickers() {
   const courses = await loadCourseList();
   const subjects = Object.keys(courses).sort();
 
-  // Hent eksisterende farver fra storage
   chrome.storage.sync.get("courseGroupColors", (data) => {
     const groupColors = data.courseGroupColors || {};
 
-    // For hvert fag, opret en farve-vælger
     subjects.forEach((subject) => {
       const colorGroup = document.createElement("div");
       colorGroup.className = "color-group";
@@ -157,10 +160,8 @@ async function displayColorPickers() {
       const colorPreview = document.createElement("div");
       colorPreview.className = "color-preview";
 
-      // Brug den eksisterende farve eller generer en ny
       const currentColor =
         groupColors[subject]?.background || generateRandomColor();
-
       let hexColor = currentColor;
 
       if (currentColor.startsWith("hsl")) {
@@ -172,8 +173,20 @@ async function displayColorPickers() {
 
       const colorPicker = document.createElement("input");
       colorPicker.type = "color";
-      colorPicker.value = hexColor; // Sæt farve-vælgeren til den aktuelle farve
+      colorPicker.value = hexColor;
       colorPicker.dataset.subject = subject;
+
+      const randomButton = document.createElement("button");
+      randomButton.textContent = "🎲";
+      randomButton.className = "random-color-btn";
+      randomButton.title = "Generer tilfældig farve";
+
+      randomButton.addEventListener("click", () => {
+        const newColor = generateRandomColor();
+        const newHex = hslToHex(...Object.values(parseHSL(newColor)));
+        colorPreview.style.backgroundColor = newColor;
+        colorPicker.value = newHex;
+      });
 
       colorPicker.addEventListener("input", (e) => {
         colorPreview.style.backgroundColor = e.target.value;
@@ -182,6 +195,7 @@ async function displayColorPickers() {
       colorGroup.appendChild(label);
       colorGroup.appendChild(colorPreview);
       colorGroup.appendChild(colorPicker);
+      colorGroup.appendChild(randomButton);
       groupColorsList.appendChild(colorGroup);
     });
   });
@@ -265,4 +279,61 @@ function parseHSL(hslString) {
     };
   }
   return null;
+}
+
+function displayStorageData() {
+  const storageList = document.getElementById("storageList");
+  storageList.innerHTML = "";
+
+  chrome.storage.sync.get(null, (data) => {
+    // Vis courseGroupColors
+    if (data.courseGroupColors) {
+      const colorSection = document.createElement("div");
+      colorSection.className = "storage-item";
+      colorSection.innerHTML = "<h4>Fagfarver</h4>";
+
+      const colorList = document.createElement("div");
+      Object.entries(data.courseGroupColors).forEach(([subject, colors]) => {
+        const colorItem = document.createElement("div");
+        colorItem.style.marginBottom = "8px";
+
+        const colorBox = document.createElement("span");
+        colorBox.className = "color-preview-box";
+        colorBox.style.backgroundColor = colors.background;
+        colorBox.style.borderLeft = `4px solid ${colors.border}`;
+
+        colorItem.appendChild(colorBox);
+        colorItem.appendChild(
+          document.createTextNode(
+            `${subject}: ${colors.background} (border: ${colors.border})`
+          )
+        );
+        colorList.appendChild(colorItem);
+      });
+      colorSection.appendChild(colorList);
+      storageList.appendChild(colorSection);
+    }
+
+    // Vis kurser
+    if (data.lectioEnhancerCourses) {
+      const coursesSection = document.createElement("div");
+      coursesSection.className = "storage-item";
+      coursesSection.innerHTML = `
+        <h4>Kurser (Sidst opdateret: ${new Date(
+          data.lastUpdated
+        ).toLocaleString("da-DK")})</h4>
+        <pre>${JSON.stringify(data.lectioEnhancerCourses, null, 2)}</pre>
+      `;
+      storageList.appendChild(coursesSection);
+    }
+  });
+
+  // Tilføj clear storage knap funktionalitet
+  document.getElementById("clearStorage").addEventListener("click", () => {
+    if (confirm("Er du sikker på at du vil rydde al gemt data?")) {
+      chrome.storage.sync.clear(() => {
+        displayStorageData();
+      });
+    }
+  });
 }

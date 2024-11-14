@@ -134,3 +134,68 @@
 #saveColors:hover {
   background-color: #45a049;
 }
+
+.random-color-btn {
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.random-color-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.admin-container {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.storage-item {
+  background: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border-left: 4px solid #4caf50;
+}
+
+.storage-item pre {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+.color-preview-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.danger-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.danger-btn:hover {
+  background-color: #c82333;
+}
