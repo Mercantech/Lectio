@@ -249,6 +249,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// TODO: Make box go away not just text!
 // Tilføj denne funktion til enhanceSchedulePage
 function setupInfoRows() {
   const infoRows = document.querySelectorAll("tr:has(.s2infoHeader)");
