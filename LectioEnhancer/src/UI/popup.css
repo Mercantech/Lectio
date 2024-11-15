@@ -66,27 +66,30 @@
   padding: 10px;
 }
 
+.course-item {
+  cursor: move;
+  user-select: none;
+}
+
+.course-item.dragging {
+  opacity: 0.5;
+  background-color: #e0e0e0;
+}
+
+.course-group.drag-over {
+  border: 2px dashed #4caf50;
+}
+
 .course-group h4 {
-  margin: 0 0 8px 0;
-  font-size: 13px;
-  color: #333;
-  border-bottom: 2px solid #4caf50;
-  padding-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.course-group ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.course-group li {
-  padding: 4px 8px;
-  margin-bottom: 4px;
-  background-color: white;
-  border-radius: 3px;
+.course-count {
   font-size: 12px;
-  border-left: 3px solid #4caf50;
+  color: #666;
+  font-weight: normal;
 }
 
 .color-group {
@@ -203,4 +206,30 @@
 
 .danger-btn:hover {
   background-color: #c82333;
+}
+
+.category-controls {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+#newCategoryInput {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#addCategoryBtn {
+  padding: 6px 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#addCategoryBtn:hover {
+  background-color: #45a049;
 }

@@ -18,8 +18,16 @@
       <div id="mainSection" class="section">
         <h2>Hovedmenu</h2>
         <div class="courses-container">
+          <div class="category-controls">
+            <input
+              type="text"
+              id="newCategoryInput"
+              placeholder="Ny kategori navn"
+            />
+            <button id="addCategoryBtn">Tilføj Kategori</button>
+          </div>
           <h3>Dine kurser</h3>
-          <ul id="coursesList" class="courses-list"></ul>
+          <div id="coursesList" class="courses-list drag-enabled"></div>
         </div>
       </div>
 

@@ -101,49 +101,65 @@ function applyClassColors() {
 
 // Tilføj denne funktion til content.js
 function saveCourses() {
-  const courseGroups = {
-    // Initialiser "ANDRE" kategorien for hvis de ikke passer i en
-    ANDRE: new Set(),
-  };
+  chrome.storage.sync.get("lectioEnhancerCourses", (data) => {
+    const existingCourses = data.lectioEnhancerCourses || {};
+    const courseGroups = {
+      ...existingCourses,
+      ANDRE: new Set(existingCourses.ANDRE || []),
+    };
 
-  const elements = document.querySelectorAll(".s2skemabrik");
+    // Hjælpefunktion til at tjekke om et kursus allerede eksisterer i nogen kategori
+    const courseExistsAnywhere = (courseName) => {
+      return Object.values(existingCourses).some((courses) =>
+        courses.includes(courseName)
+      );
+    };
 
-  elements.forEach((element) => {
-    const courseElements = element.querySelectorAll(
-      '[data-lectiocontextcard^="HE"]'
+    const elements = document.querySelectorAll(".s2skemabrik");
+
+    elements.forEach((element) => {
+      const courseElements = element.querySelectorAll(
+        '[data-lectiocontextcard^="HE"]'
+      );
+
+      courseElements.forEach((course) => {
+        const courseName = course.textContent.trim();
+
+        // Hvis kurset allerede eksisterer et sted, spring det over
+        if (courseExistsAnywhere(courseName)) {
+          return;
+        }
+
+        const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+
+        if (subjectMatch) {
+          const subject = subjectMatch[1].toUpperCase();
+          if (!courseGroups[subject]) {
+            courseGroups[subject] = new Set();
+          }
+          courseGroups[subject].add(courseName);
+        } else {
+          courseGroups.ANDRE.add(courseName);
+        }
+      });
+    });
+
+    const groupedCourses = Object.fromEntries(
+      Object.entries(courseGroups).map(([subject, courses]) => [
+        subject,
+        Array.from(courses),
+      ])
     );
 
-    courseElements.forEach((course) => {
-      const courseName = course.textContent.trim();
-      const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+    if (groupedCourses.ANDRE?.length === 0) {
+      delete groupedCourses.ANDRE;
+    }
 
-      if (subjectMatch) {
-        const subject = subjectMatch[1].toUpperCase();
-        if (!courseGroups[subject]) {
-          courseGroups[subject] = new Set();
-        }
-        courseGroups[subject].add(courseName);
-      } else {
-        // Hvis der ikke er et match, tilføj til "ANDRE" kategorien
-        courseGroups.ANDRE.add(courseName);
-      }
+    chrome.storage.sync.set({
+      lectioEnhancerCourses: groupedCourses,
+      lastUpdated: new Date().toISOString(),
     });
   });
-
-  // Konverter Sets til arrays før gemning
-  const groupedCourses = Object.fromEntries(
-    Object.entries(courseGroups).map(([subject, courses]) => [
-      subject,
-      Array.from(courses),
-    ])
-  );
-
-  // Fjern "ANDRE" kategorien hvis den er tom
-  if (groupedCourses.ANDRE.length === 0) {
-    delete groupedCourses.ANDRE;
-  }
-
-  chrome.storage.sync.set({ lectioEnhancerCourses: groupedCourses });
 }
 
 // Tilføj disse hjælpefunktioner
