@@ -271,7 +271,7 @@ function setupInfoRows() {
 
     const toggleBtn = document.createElement("button");
     toggleBtn.className = `info-toggle-btn ${wasExpanded ? "expanded" : ""}`;
-    toggleBtn.innerHTML = wasExpanded ? "Skjul detaljer" : "Vis detaljer";
+    toggleBtn.innerHTML = wasExpanded ? "" : "";
 
     const firstCell = headerRow.querySelector("td");
     if (firstCell) {
@@ -289,7 +289,7 @@ function setupInfoRows() {
       row.style.display = isExpanding ? "table-row" : "none";
 
       toggleBtn.classList.toggle("expanded");
-      toggleBtn.innerHTML = isExpanding ? "Skjul detaljer" : "Vis detaljer";
+      toggleBtn.innerHTML = isExpanding ? "" : "";
 
       localStorage.setItem(rowId, isExpanding);
 
