@@ -255,15 +255,18 @@ function setupInfoRows() {
   const infoRows = document.querySelectorAll("tr:has(.s2infoHeader)");
 
   infoRows.forEach((row, index) => {
-    // Find foregående række som vil være overskriften
     const headerRow = row.previousElementSibling;
     if (!headerRow) return;
 
-    // Gem en unik ID for denne række
     const rowId = `info-row-${index}`;
     row.dataset.infoRowId = rowId;
 
-    // Skjul rækken som standard, medmindre den var åben tidligere
+    // Skjul alle celler i rækken som standard
+    row.querySelectorAll(".s2infoHeader").forEach((cell) => {
+      cell.style.height = "0";
+      cell.style.overflow = "hidden";
+    });
+
     const wasExpanded = localStorage.getItem(rowId) === "true";
     if (wasExpanded) {
       row.querySelectorAll(".s2infoHeader").forEach((header) => {
@@ -271,20 +274,17 @@ function setupInfoRows() {
       });
     }
 
-    // Opret toggle-knap
     const toggleBtn = document.createElement("button");
     toggleBtn.className = `info-toggle-btn ${wasExpanded ? "expanded" : ""}`;
+    toggleBtn.innerHTML = wasExpanded ? "Skjul detaljer" : "Vis detaljer";
 
-    // Tilføj knappen til den første celle i header-rækken
     const firstCell = headerRow.querySelector("td");
     if (firstCell) {
       firstCell.style.position = "relative";
       firstCell.appendChild(toggleBtn);
     }
 
-    // Tilføj click handler
     toggleBtn.addEventListener("click", (e) => {
-      // Forhindre standard opførsel
       e.preventDefault();
       e.stopPropagation();
 
@@ -296,8 +296,8 @@ function setupInfoRows() {
       });
 
       toggleBtn.classList.toggle("expanded");
+      toggleBtn.innerHTML = isExpanding ? "Skjul detaljer" : "Vis detaljer";
 
-      // Gem tilstanden
       localStorage.setItem(rowId, isExpanding);
 
       return false;

@@ -210,21 +210,24 @@
   padding: 0 !important;
   height: 0 !important;
   border: none !important;
+  overflow: hidden !important;
 }
 
 .s2infoHeader.expanded {
-  height: auto !important;
+  height: 30px !important; /* Juster denne værdi efter behov */
   padding: 12px !important;
   border: 1px solid #dee2e6 !important;
 }
 
 .s2infoHeader .s2skemabrikcontainer {
   transition: all 0.3s ease-out;
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
-/* Skjul div inde i ikke-ekspanderede rækker */
-.s2infoHeader:not(.expanded) .s2skemabrikcontainer div {
-  display: none;
+.s2infoHeader.expanded .s2skemabrikcontainer {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .info-toggle-btn {
