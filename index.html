@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lectio Enhancer - Chrome Extension</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">Lectio Enhancer</div>
+        <ul>
+          <li><a href="#features">Funktioner</a></li>
+          <li><a href="#installation">Installation</a></li>
+          <li><a href="#contact">Kontakt</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero">
+        <h1>Gør din Lectio-oplevelse bedre</h1>
+        <p>
+          En gratis Chrome extension der moderniserer og forbedrer din daglige
+          brug af Lectio
+        </p>
+        <a href="#" class="cta-button">Download Extension</a>
+      </section>
+
+      <section id="features">
+        <h2>Funktioner</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <img src="dark-mode-icon.svg" alt="Dark Mode" />
+            <h3>Dark Mode</h3>
+            <p>Skån dine øjne med indbygget dark mode</p>
+          </div>
+          <!-- Tilføj flere feature-cards her -->
+        </div>
+      </section>
+
+      <section id="installation">
+        <h2>Installation</h2>
+        <div class="installation-steps">
+          <ol>
+            <li>Åbn Chrome Web Store</li>
+            <li>Søg efter "Lectio Enhancer"</li>
+            <li>Klik på "Tilføj til Chrome"</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="contact">
+        <h2>Rapportér Fejl eller Forslag</h2>
+        <form id="contactForm">
+          <input type="text" placeholder="Navn" required />
+          <input type="email" placeholder="Email" required />
+          <select required>
+            <option value="">Vælg kategori</option>
+            <option value="bug">Fejl</option>
+            <option value="feature">Forslag til ny funktion</option>
+            <option value="other">Andet</option>
+          </select>
+          <textarea placeholder="Din besked" required></textarea>
+          <button type="submit">Send Besked</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Lectio Enhancer</p>
+    </footer>
+
+    <script>
+      document
+        .getElementById("contactForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          // Her tilføjes logik til at håndtere form submission
+        });
+    </script>
+  </body>
+</html>
