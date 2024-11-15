@@ -249,54 +249,48 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// TODO: Make box go away not just text!
 // Tilføj denne funktion til enhanceSchedulePage
 function setupInfoRows() {
   const infoRows = document.querySelectorAll("tr:has(.s2infoHeader)");
 
   infoRows.forEach((row, index) => {
-    // Find foregående række som vil være overskriften
     const headerRow = row.previousElementSibling;
     if (!headerRow) return;
 
-    // Gem en unik ID for denne række
     const rowId = `info-row-${index}`;
     row.dataset.infoRowId = rowId;
 
-    // Skjul rækken som standard, medmindre den var åben tidligere
+    // Skjul hele rækken som standard
+    row.style.display = "none";
+
     const wasExpanded = localStorage.getItem(rowId) === "true";
     if (wasExpanded) {
-      row.querySelectorAll(".s2infoHeader").forEach((header) => {
-        header.classList.add("expanded");
-      });
+      row.style.display = "table-row";
     }
 
-    // Opret toggle-knap
     const toggleBtn = document.createElement("button");
     toggleBtn.className = `info-toggle-btn ${wasExpanded ? "expanded" : ""}`;
+    toggleBtn.innerHTML = wasExpanded ? "" : "";
 
-    // Tilføj knappen til den første celle i header-rækken
     const firstCell = headerRow.querySelector("td");
     if (firstCell) {
       firstCell.style.position = "relative";
       firstCell.appendChild(toggleBtn);
     }
 
-    // Tilføj click handler
     toggleBtn.addEventListener("click", (e) => {
-      // Forhindre standard opførsel
       e.preventDefault();
       e.stopPropagation();
 
-      const infoHeaders = row.querySelectorAll(".s2infoHeader");
       const isExpanding = !toggleBtn.classList.contains("expanded");
 
-      infoHeaders.forEach((header) => {
-        header.classList.toggle("expanded");
-      });
+      // Vis/skjul hele rækken
+      row.style.display = isExpanding ? "table-row" : "none";
 
       toggleBtn.classList.toggle("expanded");
+      toggleBtn.innerHTML = isExpanding ? "" : "";
 
-      // Gem tilstanden
       localStorage.setItem(rowId, isExpanding);
 
       return false;
