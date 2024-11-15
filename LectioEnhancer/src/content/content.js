@@ -261,17 +261,12 @@ function setupInfoRows() {
     const rowId = `info-row-${index}`;
     row.dataset.infoRowId = rowId;
 
-    // Skjul alle celler i rækken som standard
-    row.querySelectorAll(".s2infoHeader").forEach((cell) => {
-      cell.style.height = "0";
-      cell.style.overflow = "hidden";
-    });
+    // Skjul hele rækken som standard
+    row.style.display = "none";
 
     const wasExpanded = localStorage.getItem(rowId) === "true";
     if (wasExpanded) {
-      row.querySelectorAll(".s2infoHeader").forEach((header) => {
-        header.classList.add("expanded");
-      });
+      row.style.display = "table-row";
     }
 
     const toggleBtn = document.createElement("button");
@@ -288,12 +283,10 @@ function setupInfoRows() {
       e.preventDefault();
       e.stopPropagation();
 
-      const infoHeaders = row.querySelectorAll(".s2infoHeader");
       const isExpanding = !toggleBtn.classList.contains("expanded");
 
-      infoHeaders.forEach((header) => {
-        header.classList.toggle("expanded");
-      });
+      // Vis/skjul hele rækken
+      row.style.display = isExpanding ? "table-row" : "none";
 
       toggleBtn.classList.toggle("expanded");
       toggleBtn.innerHTML = isExpanding ? "Skjul detaljer" : "Vis detaljer";
