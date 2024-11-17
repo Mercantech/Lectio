@@ -507,7 +507,7 @@ async function setupAuth() {
       }
 
       const response = await fetch(
-        "https://localhost:7191/api/Users/simple-login",
+        "https://lectio-api.onrender.com/api/Users/simple-login",
         {
           method: "POST",
           headers: {

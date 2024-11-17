@@ -275,10 +275,18 @@ function setupInfoRows() {
 
 function createDrawer() {
   const drawer = document.createElement("div");
-  drawer.id = "lectio-drawer";
+  drawer.className = "lectio-drawer";
+
+  // Hent gemt tilstand
+  const isDrawerOpen =
+    localStorage.getItem("lectioEnhancerDrawerOpen") === "true";
+  if (isDrawerOpen) {
+    drawer.classList.add("open");
+  }
+
   drawer.innerHTML = `
     <div class="drawer-handle">
-      <span class="handle-icon">◀</span>
+      <span class="handle-icon">${isDrawerOpen ? "▶" : "◀"}</span>
     </div>
     <div class="drawer-content">
       <h3>Lectio Enhancer</h3>
@@ -294,8 +302,11 @@ function createDrawer() {
   const handle = drawer.querySelector(".drawer-handle");
   handle.addEventListener("click", () => {
     drawer.classList.toggle("open");
-    handle.querySelector(".handle-icon").textContent =
-      drawer.classList.contains("open") ? "▶" : "◀";
+    const isOpen = drawer.classList.contains("open");
+    handle.querySelector(".handle-icon").textContent = isOpen ? "▶" : "◀";
+
+    // Gem tilstand i localStorage
+    localStorage.setItem("lectioEnhancerDrawerOpen", isOpen);
   });
 
   // Initialiser leaderboard
@@ -314,6 +325,14 @@ function createDrawer() {
 }
 
 async function updateLeaderboard(container) {
+  // Vis loading animation først
+  container.innerHTML = `
+    <div class="leaderboard-loading">
+      <div class="spinner"></div>
+      <p>Indlæser rangliste...</p>
+    </div>
+  `;
+
   try {
     // Hent den aktuelle bruger og visningstype fra storage
     const storage = await chrome.storage.sync.get([
@@ -325,8 +344,8 @@ async function updateLeaderboard(container) {
 
     // Vælg endpoint baseret på visningstype
     const endpoint = isGlobalView
-      ? "https://localhost:7191/api/Leaderboard/Top10"
-      : `https://localhost:7191/api/Leaderboard/school/${currentUser.schoolId}`;
+      ? "https://lectio-api.onrender.com/api/Leaderboard/Top10"
+      : `https://lectio-api.onrender.com/api/Leaderboard/school/${currentUser.schoolId}`;
 
     const response = await fetch(endpoint);
     const data = await response.json();

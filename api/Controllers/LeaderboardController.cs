@@ -1,8 +1,10 @@
+using System;
 using api.Context;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace api.Controllers
 {
@@ -11,10 +13,12 @@ namespace api.Controllers
     public class LeaderboardController : ControllerBase
     {
         private readonly LectioEnhancerDBContext _context;
+        private readonly IDistributedCache _cache;
 
-        public LeaderboardController(LectioEnhancerDBContext context)
+        public LeaderboardController(LectioEnhancerDBContext context, IDistributedCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: api/Leaderboard
@@ -104,6 +108,8 @@ namespace api.Controllers
                 entry.TotalPoints += pointsDto.Points;
                 entry.LastUpdated = DateTime.UtcNow;
             }
+            await _cache.RemoveAsync("Top10Leaderboard");
+            await _cache.RemoveAsync($"SchoolLeaderboard_{entry.User.SchoolId}");
 
             await _context.SaveChangesAsync();
             await UpdateLeaderboardPositions();
@@ -161,8 +167,17 @@ namespace api.Controllers
 
         // GET: api/Leaderboard/Top10
         [HttpGet("Top10")]
+        [ResponseCache(Duration = 300)]
         public async Task<ActionResult<IEnumerable<LeaderboardEntryDTO>>> GetTop10Leaderboard()
         {
+            var cacheKey = "Top10Leaderboard";
+            var cachedData = await _cache.GetAsync<List<LeaderboardEntryDTO>>(cacheKey);
+
+            if (cachedData != null)
+            {
+                return Ok(cachedData);
+            }
+
             var top10 = await _context
                 .LeaderboardEntries.Include(l => l.User)
                 .OrderByDescending(l => l.TotalPoints)
@@ -177,14 +192,24 @@ namespace api.Controllers
                 })
                 .ToListAsync();
 
+            await _cache.SetAsync(cacheKey, top10, TimeSpan.FromMinutes(5));
             return Ok(top10);
         }
 
         [HttpGet("school/{schoolId}")]
+        [ResponseCache(Duration = 300)]
         public async Task<ActionResult<IEnumerable<LeaderboardEntryDTO>>> GetSchoolLeaderboard(
             int schoolId
         )
         {
+            var cacheKey = $"SchoolLeaderboard_{schoolId}";
+            var cachedData = await _cache.GetAsync<List<LeaderboardEntryDTO>>(cacheKey);
+
+            if (cachedData != null)
+            {
+                return Ok(cachedData);
+            }
+
             var schoolLeaderboard = await _context
                 .LeaderboardEntries.Include(l => l.User)
                 .Where(l => l.User.SchoolId == schoolId)
@@ -205,12 +230,12 @@ namespace api.Controllers
                 return NotFound(new { message = "Ingen leaderboard-data fundet for denne skole" });
             }
 
-            // Opdater positioner specifikt for skole-leaderboard
             for (int i = 0; i < schoolLeaderboard.Count; i++)
             {
                 schoolLeaderboard[i].Position = i + 1;
             }
 
+            await _cache.SetAsync(cacheKey, schoolLeaderboard, TimeSpan.FromMinutes(5));
             return Ok(schoolLeaderboard);
         }
     }

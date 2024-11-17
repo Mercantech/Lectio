@@ -87,6 +87,8 @@ namespace api
                     };
                 });
 
+            builder.Services.AddResponseCaching();
+
             var app = builder.Build();
 
             app.UseSwagger();
@@ -96,6 +98,7 @@ namespace api
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseResponseCaching();
             app.MapControllers();
 
             app.Run();
