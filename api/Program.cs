@@ -19,11 +19,14 @@ namespace api
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(
-                    "AllowLectio",
+                    "AllowLectioAndExtensions",
                     builder =>
                     {
                         builder
-                            .WithOrigins("https://www.lectio.dk")
+                            .WithOrigins(
+                                "https://www.lectio.dk",
+                                "chrome-extension://ifjglnjkilnjppbpdpibnlacpbblngck"
+                            )
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     }
@@ -92,7 +95,7 @@ namespace api
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowLectio");
+            app.UseCors("AllowLectioAndExtensions");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();

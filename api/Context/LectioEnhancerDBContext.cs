@@ -12,6 +12,7 @@ namespace api.Context
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<UserAchievement> UserAchievements { get; set; }
         public DbSet<LeaderboardEntry> LeaderboardEntries { get; set; }
+        public DbSet<School> Schools { get; set; }
 
         public override int SaveChanges()
         {
@@ -74,6 +75,15 @@ namespace api.Context
                 .HasOne(le => le.User)
                 .WithOne(u => u.LeaderboardEntry)
                 .HasForeignKey<LeaderboardEntry>(le => le.UserId);
+
+            modelBuilder.Entity<School>().HasIndex(s => s.SchoolId).IsUnique();
+
+            modelBuilder
+                .Entity<User>()
+                .HasOne(u => u.School)
+                .WithMany(s => s.Users)
+                .HasForeignKey(u => u.SchoolId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

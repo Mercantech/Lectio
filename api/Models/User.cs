@@ -7,10 +7,13 @@
         public string? Email { get; set; }
         public string? Password { get; set; }
         public string? Salt { get; set; }
-        public int schoolID { get; set; }
+
+        //public int schoolID { get; set; }
         public Role? Role { get; set; }
         public int CurrentPoints { get; set; }
         public int TotalAchievements { get; set; }
+        public int? SchoolId { get; set; }
+        public virtual School? School { get; set; }
         public ICollection<UserAchievement> Achievements { get; set; }
         public LeaderboardEntry LeaderboardEntry { get; set; }
     }
@@ -47,6 +50,7 @@
     public class SimpleUserDTO
     {
         public string Name { get; set; }
+        public int? SchoolId { get; set; }
     }
 
     public class SetPasswordDTO

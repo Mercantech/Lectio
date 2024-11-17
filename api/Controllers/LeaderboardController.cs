@@ -158,6 +158,61 @@ namespace api.Controllers
                 }
             );
         }
+
+        // GET: api/Leaderboard/Top10
+        [HttpGet("Top10")]
+        public async Task<ActionResult<IEnumerable<LeaderboardEntryDTO>>> GetTop10Leaderboard()
+        {
+            var top10 = await _context
+                .LeaderboardEntries.Include(l => l.User)
+                .OrderByDescending(l => l.TotalPoints)
+                .ThenBy(l => l.LastUpdated)
+                .Take(10)
+                .Select(l => new LeaderboardEntryDTO
+                {
+                    Position = l.Position,
+                    UserName = l.User.Name,
+                    TotalPoints = l.TotalPoints,
+                    LastUpdated = l.LastUpdated
+                })
+                .ToListAsync();
+
+            return Ok(top10);
+        }
+
+        [HttpGet("school/{schoolId}")]
+        public async Task<ActionResult<IEnumerable<LeaderboardEntryDTO>>> GetSchoolLeaderboard(
+            int schoolId
+        )
+        {
+            var schoolLeaderboard = await _context
+                .LeaderboardEntries.Include(l => l.User)
+                .Where(l => l.User.SchoolId == schoolId)
+                .OrderByDescending(l => l.TotalPoints)
+                .ThenBy(l => l.LastUpdated)
+                .Select(l => new LeaderboardEntryDTO
+                {
+                    Position = l.Position,
+                    UserName = l.User.Name,
+                    TotalPoints = l.TotalPoints,
+                    LastUpdated = l.LastUpdated,
+                    SchoolName = l.User.School.Name
+                })
+                .ToListAsync();
+
+            if (!schoolLeaderboard.Any())
+            {
+                return NotFound(new { message = "Ingen leaderboard-data fundet for denne skole" });
+            }
+
+            // Opdater positioner specifikt for skole-leaderboard
+            for (int i = 0; i < schoolLeaderboard.Count; i++)
+            {
+                schoolLeaderboard[i].Position = i + 1;
+            }
+
+            return Ok(schoolLeaderboard);
+        }
     }
 
     public class LeaderboardEntryDTO
@@ -166,6 +221,7 @@ namespace api.Controllers
         public string UserName { get; set; }
         public int TotalPoints { get; set; }
         public DateTime LastUpdated { get; set; }
+        public string SchoolName { get; set; }
     }
 
     public class AddPointsDTO

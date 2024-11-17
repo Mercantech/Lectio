@@ -38,40 +38,15 @@ function toggleDarkMode() {
   localStorage.setItem("lectioEnhancerDarkMode", isDarkMode);
 }
 
-function createEnhancerButton() {
-  const button = document.createElement("button");
-  button.id = "lectio-enhancer-btn";
-
-  // Sæt initial tekst baseret på current mode
-  const isDarkMode = document.body.classList.contains("dark-mode");
-  button.innerHTML = isDarkMode ? "Light Mode" : "Dark Mode";
-
-  button.style.position = "fixed";
-  button.style.bottom = "20px";
-  button.style.right = "20px";
-  button.style.zIndex = "9999";
-
-  button.addEventListener("click", () => {
-    toggleDarkMode();
-    // Opdater knappens tekst
-    button.innerHTML = document.body.classList.contains("dark-mode")
-      ? "Light Mode"
-      : "Dark Mode";
-  });
-
-  document.body.appendChild(button);
-}
-
 function enhanceLectio() {
   document.body.classList.add("lectio-enhanced");
 
-  // Check om brugeren tidligere har valgt dark mode
   const savedDarkMode = localStorage.getItem("lectioEnhancerDarkMode");
   if (savedDarkMode === "true") {
     document.body.classList.add("dark-mode");
   }
 
-  createEnhancerButton();
+  createDrawer();
   enhanceSchedulePage();
 }
 
@@ -297,3 +272,188 @@ function setupInfoRows() {
     });
   });
 }
+
+function createDrawer() {
+  const drawer = document.createElement("div");
+  drawer.id = "lectio-drawer";
+  drawer.innerHTML = `
+    <div class="drawer-handle">
+      <span class="handle-icon">◀</span>
+    </div>
+    <div class="drawer-content">
+      <h3>Lectio Enhancer</h3>
+      <div id="drawer-leaderboard"></div>
+      <button id="drawer-dark-mode">
+        <span class="mode-icon">🌙</span>
+        Dark Mode
+      </button>
+    </div>
+  `;
+  document.body.appendChild(drawer);
+
+  const handle = drawer.querySelector(".drawer-handle");
+  handle.addEventListener("click", () => {
+    drawer.classList.toggle("open");
+    handle.querySelector(".handle-icon").textContent =
+      drawer.classList.contains("open") ? "▶" : "◀";
+  });
+
+  // Initialiser leaderboard
+  const leaderboardContainer = document.getElementById("drawer-leaderboard");
+  updateLeaderboard(leaderboardContainer);
+
+  // Opdater dark mode knap
+  const darkModeBtn = document.getElementById("drawer-dark-mode");
+  darkModeBtn.addEventListener("click", () => {
+    toggleDarkMode();
+    const icon = darkModeBtn.querySelector(".mode-icon");
+    icon.textContent = document.body.classList.contains("dark-mode")
+      ? "☀️"
+      : "🌙";
+  });
+}
+
+async function updateLeaderboard(container) {
+  try {
+    // Hent den aktuelle bruger og visningstype fra storage
+    const storage = await chrome.storage.sync.get([
+      "currentUser",
+      "leaderboardView",
+    ]);
+    const currentUser = storage.currentUser;
+    const isGlobalView = storage.leaderboardView !== "school";
+
+    // Vælg endpoint baseret på visningstype
+    const endpoint = isGlobalView
+      ? "https://localhost:7191/api/Leaderboard/Top10"
+      : `https://localhost:7191/api/Leaderboard/school/${currentUser.schoolId}`;
+
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    let html = `
+      <div class="leaderboard-section">
+        <div class="leaderboard-header">
+          <h4>🏆 ${isGlobalView ? "Global Top 10" : "Skole Top 10"}</h4>
+          <button class="toggle-view-btn" id="toggleLeaderboardView">
+            ${isGlobalView ? "🏫 Vis skolens" : "🌍 Vis global"}
+          </button>
+        </div>
+        <table>
+    `;
+
+    data.forEach((item) => {
+      const medal =
+        item.position === 1
+          ? "🥇"
+          : item.position === 2
+          ? "🥈"
+          : item.position === 3
+          ? "🥉"
+          : "";
+      const isCurrentUser = currentUser && item.userName === currentUser.name;
+      const rowClass = isCurrentUser ? "current-user-row" : "";
+
+      html += `
+        <tr class="${rowClass}">
+          <td>${medal} #${item.position}</td>
+          <td>${item.userName}</td>
+          <td>${item.totalPoints} pts</td>
+        </tr>
+      `;
+    });
+
+    html += "</table></div>";
+    container.innerHTML = html;
+
+    // Tilføj event listener til toggle knappen
+    const toggleBtn = container.querySelector("#toggleLeaderboardView");
+    toggleBtn.addEventListener("click", async () => {
+      const newView = isGlobalView ? "school" : "global";
+      await chrome.storage.sync.set({ leaderboardView: newView });
+      updateLeaderboard(container);
+    });
+  } catch (error) {
+    container.innerHTML = "<p>Kunne ikke indlæse ranglisten</p>";
+  }
+}
+
+// Tilføj denne funktion
+function extractUserInfo() {
+  const schoolIdMatch = window.location.href.match(/lectio\/(\d+)\//);
+  const schoolId = schoolIdMatch ? parseInt(schoolIdMatch[1]) : null;
+
+  if (!window.location.href.endsWith("forside.aspx")) {
+    return null;
+  }
+
+  const titleElement = document.querySelector("#s_m_HeaderContent_MainTitle");
+  if (!titleElement || !titleElement.textContent.includes("Forside")) {
+    return null;
+  }
+
+  const nameSpan = titleElement.querySelector(".ls-hidden-smallscreen");
+  if (!nameSpan) return null;
+
+  const fullNameMatch = nameSpan.textContent.match(/- ([^-]+) -/);
+  if (!fullNameMatch) return null;
+
+  const fullName = fullNameMatch[1].trim();
+  const names = fullName.split(" ");
+
+  const firstName = names[0];
+  const lastInitials = names
+    .slice(1)
+    .map((name) => name[0])
+    .join("");
+
+  const username = `${firstName} ${lastInitials}`;
+
+  return {
+    name: username,
+    schoolId: schoolId,
+  };
+}
+
+function generateSecurePassword() {
+  const length = 12;
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+  let password = "";
+
+  // Sikrer at vi har mindst én af hver påkrævet type
+  password += "A"; // Stort bogstav
+  password += "a"; // Lille bogstav
+  password += "1"; // Tal
+  password += "!"; // Specialtegn
+
+  // Fyld resten af længden med tilfældige tegn
+  for (let i = password.length; i < length; i++) {
+    password += charset[Math.floor(Math.random() * charset.length)];
+  }
+
+  return password;
+}
+
+// Tilføj message listener
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "getUserInfo") {
+    const userInfo = extractUserInfo();
+    sendResponse(userInfo);
+  }
+});
+
+// Tilføj denne del til content.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "checkLoginStatus") {
+    const userElement = document.querySelector(".ls-master-header-institution");
+    const isLoggedIn = !!userElement;
+    const username = isLoggedIn ? userElement.textContent.trim() : null;
+
+    sendResponse({
+      isLoggedIn,
+      username,
+    });
+  }
+  return true;
+});

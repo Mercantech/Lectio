@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -31,6 +32,19 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Schools",
+                columns: table => new
+                {
+                    SchoolId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schools", x => x.SchoolId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -43,12 +57,19 @@ namespace api.Migrations
                     Role = table.Column<int>(type: "integer", nullable: true),
                     CurrentPoints = table.Column<int>(type: "integer", nullable: false),
                     TotalAchievements = table.Column<int>(type: "integer", nullable: false),
+                    SchoolId = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Schools_SchoolId",
+                        column: x => x.SchoolId,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,9 +130,26 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schools_SchoolId",
+                table: "Schools",
+                column: "SchoolId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserAchievements_AchievementId",
                 table: "UserAchievements",
                 column: "AchievementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Name",
+                table: "Users",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_SchoolId",
+                table: "Users",
+                column: "SchoolId");
         }
 
         /// <inheritdoc />
@@ -128,6 +166,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Schools");
         }
     }
 }

@@ -13,10 +13,23 @@
         <button class="menu-item" data-section="colors">Farve Vælger</button>
         <button class="menu-item" data-section="settings">Indstillinger</button>
         <button class="menu-item" data-section="admin">Admin</button>
+        <button id="logoutBtn" class="menu-item hidden">
+          <span class="btn-icon">🚪</span> Log ud
+        </button>
       </div>
 
       <div id="mainSection" class="section">
         <h2>Hovedmenu</h2>
+        <div id="userArea" class="user-controls">
+          <div id="authButtons">
+            <button id="oneClickSignup" class="auth-btn">
+              <span class="btn-icon">👤</span> Opret
+            </button>
+            <button id="simpleLogin" class="auth-btn">
+              <span class="btn-icon">🔑</span> Log ind
+            </button>
+          </div>
+        </div>
         <div class="courses-container">
           <div class="category-controls">
             <input
@@ -40,6 +53,23 @@
 
       <div id="settingsSection" class="section hidden">
         <h2>Indstillinger</h2>
+        <div class="settings-container">
+          <div class="settings-group">
+            <h3>Bruger</h3>
+            <div id="loginStatus"></div>
+            <div id="userInfo" class="hidden">
+              <button id="logoutBtn" class="settings-btn">
+                <span class="btn-icon">🚪</span>
+                Log ud
+              </button>
+            </div>
+            <div id="loginForm" class="hidden">
+              <button id="simpleLogin" class="settings-btn">
+                <span class="btn-icon">🔑</span>
+                Log ind med Lectio-profil
+              </button>
+            </div>
+        </div>
       </div>
 
       <div id="adminSection" class="section hidden">

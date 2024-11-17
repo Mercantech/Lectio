@@ -114,6 +114,19 @@ namespace API.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
+                // Opret leaderboard entry
+                var leaderboardEntry = new LeaderboardEntry
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = user.Id,
+                    TotalPoints = 0,
+                    Position = await _context.LeaderboardEntries.CountAsync() + 1,
+                    LastUpdated = DateTime.UtcNow
+                };
+
+                _context.LeaderboardEntries.Add(leaderboardEntry);
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -143,16 +156,25 @@ namespace API.Controllers
                 Id = Guid.NewGuid().ToString("N"),
                 Name = simpleUser.Name,
                 CreatedAt = DateTime.UtcNow.AddHours(2),
-                StudentID = 0,
-                Email = null,
-                Password = null,
-                Salt = null,
-                Role = Role.Student // Default rolle
+                SchoolId = simpleUser.SchoolId,
+                Role = Role.Student
             };
 
             _context.Users.Add(user);
             try
             {
+                await _context.SaveChangesAsync();
+
+                var leaderboardEntry = new LeaderboardEntry
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = user.Id,
+                    TotalPoints = 0,
+                    Position = await _context.LeaderboardEntries.CountAsync() + 1,
+                    LastUpdated = DateTime.UtcNow
+                };
+
+                _context.LeaderboardEntries.Add(leaderboardEntry);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -305,6 +327,46 @@ namespace API.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpPost("simple-login")]
+        public async Task<IActionResult> SimpleLogin([FromBody] SimpleUserDTO simpleUser)
+        {
+            if (await _context.Users.AnyAsync(item => item.Name == simpleUser.Name))
+            {
+                var existingUser = await _context.Users.FirstAsync(u => u.Name == simpleUser.Name);
+                var token = GenerateJwtToken(existingUser);
+                return Ok(
+                    new
+                    {
+                        token,
+                        existingUser.Name,
+                        existingUser.Id
+                    }
+                );
+            }
+
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Name = simpleUser.Name,
+                CreatedAt = DateTime.UtcNow.AddHours(2),
+                SchoolId = simpleUser.SchoolId,
+                Role = Role.Student
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            var newToken = GenerateJwtToken(user);
+            return Ok(
+                new
+                {
+                    token = newToken,
+                    user.Name,
+                    user.Id
+                }
+            );
         }
     }
 }

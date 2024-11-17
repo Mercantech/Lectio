@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(LectioEnhancerDBContext))]
-    [Migration("20241116143631_Init")]
+    [Migration("20241117135714_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -94,6 +94,26 @@ namespace api.Migrations
                     b.ToTable("LeaderboardEntries");
                 });
 
+            modelBuilder.Entity("api.Models.School", b =>
+                {
+                    b.Property<int>("SchoolId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SchoolId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("SchoolId");
+
+                    b.HasIndex("SchoolId")
+                        .IsUnique();
+
+                    b.ToTable("Schools");
+                });
+
             modelBuilder.Entity("api.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -121,6 +141,9 @@ namespace api.Migrations
                     b.Property<string>("Salt")
                         .HasColumnType("text");
 
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("StudentID")
                         .HasColumnType("integer");
 
@@ -131,6 +154,11 @@ namespace api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("SchoolId");
 
                     b.ToTable("Users");
                 });
@@ -173,6 +201,16 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("api.Models.User", b =>
+                {
+                    b.HasOne("api.Models.School", "School")
+                        .WithMany("Users")
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("School");
+                });
+
             modelBuilder.Entity("api.Models.UserAchievement", b =>
                 {
                     b.HasOne("api.Models.Achievement", "Achievement")
@@ -195,6 +233,11 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Achievement", b =>
                 {
                     b.Navigation("UserAchievements");
+                });
+
+            modelBuilder.Entity("api.Models.School", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("api.Models.User", b =>

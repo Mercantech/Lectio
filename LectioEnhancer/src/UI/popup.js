@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   displayCourses();
   setupMenu();
   setupCategoryControls();
+  setupAuth();
 });
 
 function setupMenu() {
@@ -467,4 +468,94 @@ function setupCategoryControls() {
       });
     }
   });
+}
+
+async function setupAuth() {
+  const userArea = document.getElementById("userArea");
+  const signupBtn = document.getElementById("oneClickSignup");
+  const loginBtn = document.getElementById("simpleLogin");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Tjek login status
+  chrome.storage.sync.get(["authToken", "currentUser"], (data) => {
+    if (data.authToken && data.currentUser) {
+      document.getElementById("logoutBtn").classList.remove("hidden");
+      userArea.classList.add("hidden"); // Skjul hele userArea
+    } else {
+      document.getElementById("logoutBtn").classList.add("hidden");
+      userArea.classList.remove("hidden"); // Vis userArea
+    }
+  });
+
+  // Setup login
+  loginBtn?.addEventListener("click", async () => {
+    try {
+      if (!loginBtn) return;
+      loginBtn.classList.add("loading");
+
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      const userInfo = await chrome.tabs.sendMessage(tabs[0].id, {
+        action: "getUserInfo",
+      });
+
+      if (!userInfo) {
+        loginBtn?.classList.remove("loading");
+        return;
+      }
+
+      const response = await fetch(
+        "https://localhost:7191/api/Users/simple-login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: userInfo.name,
+            schoolId: userInfo.schoolId,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        chrome.storage.sync.set({
+          authToken: data.token,
+          currentUser: {
+            name: data.name,
+            id: data.id,
+            schoolId: userInfo.schoolId,
+          },
+        });
+        document.getElementById("logoutBtn").classList.remove("hidden");
+        userArea.classList.add("hidden"); // Skjul userArea efter login
+      }
+    } catch (error) {
+      console.error("Login fejl:", error);
+    } finally {
+      loginBtn?.classList.remove("loading");
+    }
+  });
+
+  // Setup logout
+  logoutBtn?.addEventListener("click", () => {
+    chrome.storage.sync.remove(["authToken", "currentUser"], () => {
+      document.getElementById("logoutBtn").classList.add("hidden");
+      userArea.classList.remove("hidden"); // Vis userArea efter logout
+    });
+  });
+}
+
+function updateUserDisplay(username) {
+  const userDisplay = document.createElement("div");
+  userDisplay.className = "user-info";
+  userDisplay.innerHTML = `
+    <span class="user-icon">👤</span>
+    <span class="username">${username}</span>
+  `;
+
+  document.querySelector(".header")?.appendChild(userDisplay);
 }
