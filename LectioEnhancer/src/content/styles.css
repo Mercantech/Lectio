@@ -710,3 +710,37 @@ body.dark-mode,
   border: 3px solid #333;
   border-top: 3px solid #8ba4fc;
 }
+
+/* Dark mode specifik styling */
+.dark-mode .s2module-bg {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+}
+
+.dark-mode .s2dayHeader td,
+.dark-mode .s2weekHeader td {
+  color: #e0e0e0 !important;
+  background-color: #2d2d2d !important;
+}
+
+.dark-mode .s2SkemaDivider {
+  border-color: #333 !important;
+}
+
+/* Bevar de oprindelige farver for ALLE skema-brikker */
+.dark-mode .s2skemabrik {
+  background-color: inherit !important;
+  border-left: 4px solid inherit !important;
+}
+
+/* Dark mode specifik styling */
+.dark-mode .s2skemabrikcontainer,
+.dark-mode .s2skemabrikcontainer.lec-context-menu-instance {
+  background-color: #1a1a1a !important;
+}
+
+.dark-mode #s_m_Content_Content_SkemaMedNavigation_skemaprintarea,
+.dark-mode .ls-card-filled {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+}
