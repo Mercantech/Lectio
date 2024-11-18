@@ -547,6 +547,59 @@ async function setupAuth() {
       userArea.classList.remove("hidden"); // Vis userArea efter logout
     });
   });
+
+  // Tilføj signup funktionalitet
+  signupBtn?.addEventListener("click", async () => {
+    try {
+      if (!signupBtn) return;
+      signupBtn.classList.add("loading");
+
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      const userInfo = await chrome.tabs.sendMessage(tabs[0].id, {
+        action: "getUserInfo",
+      });
+
+      if (!userInfo) {
+        signupBtn?.classList.remove("loading");
+        return;
+      }
+
+      const response = await fetch(
+        "https://lectio-api.onrender.com/api/Users/simple",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: userInfo.name,
+            schoolId: userInfo.schoolId,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        chrome.storage.sync.set({
+          authToken: data.token,
+          currentUser: {
+            name: data.name,
+            id: data.id,
+            schoolId: userInfo.schoolId,
+          },
+        });
+        document.getElementById("logoutBtn").classList.remove("hidden");
+        userArea.classList.add("hidden");
+      }
+    } catch (error) {
+      console.error("Signup fejl:", error);
+    } finally {
+      signupBtn?.classList.remove("loading");
+    }
+  });
 }
 
 function updateUserDisplay(username) {
