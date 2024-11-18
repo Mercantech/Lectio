@@ -23,10 +23,7 @@ namespace api
                     builder =>
                     {
                         builder
-                            .WithOrigins(
-                                "https://www.lectio.dk",
-                                "chrome-extension://ifjglnjkilnjppbpdpibnlacpbblngck"
-                            )
+                            .WithOrigins("https://www.lectio.dk", "*")
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     }
