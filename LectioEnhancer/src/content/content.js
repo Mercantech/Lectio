@@ -414,22 +414,21 @@ function extractUserInfo() {
   const nameSpan = titleElement.querySelector(".ls-hidden-smallscreen");
   if (!nameSpan) return null;
 
-  const fullNameMatch = nameSpan.textContent.match(/- ([^-]+) -/);
-  if (!fullNameMatch) return null;
+  let name;
+  const spanText = nameSpan.textContent;
 
-  const fullName = fullNameMatch[1].trim();
-  const names = fullName.split(" ");
-
-  const firstName = names[0];
-  const lastInitials = names
-    .slice(1)
-    .map((name) => name[0])
-    .join("");
-
-  const username = `${firstName} ${lastInitials}`;
+  if (spanText.startsWith("Eleven")) {
+    // Format: "Eleven Jonas Emil Kaihøj Sloth Nielsen, 21ib - "
+    name = spanText.replace("Eleven ", "").split(",")[0].trim();
+  } else if (spanText.startsWith("Læreren")) {
+    // Format: "Læreren mags - Mathias Gaarsdal Steenberg - "
+    name = spanText.split("-")[1].trim();
+  } else {
+    return null;
+  }
 
   return {
-    name: username,
+    name: name,
     schoolId: schoolId,
   };
 }
