@@ -334,13 +334,9 @@ async function updateLeaderboard(container) {
   `;
 
   try {
-    // Hent den aktuelle bruger og visningstype fra storage
-    const storage = await chrome.storage.sync.get([
-      "currentUser",
-      "leaderboardView",
-    ]);
-    const currentUser = storage.currentUser;
-    const isGlobalView = storage.leaderboardView !== "school";
+    // Hent den aktuelle bruger og visningstype fra localStorage
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const isGlobalView = localStorage.getItem("leaderboardView") !== "school";
 
     // Vælg endpoint baseret på visningstype
     const endpoint = isGlobalView
@@ -387,13 +383,29 @@ async function updateLeaderboard(container) {
 
     // Tilføj event listener til toggle knappen
     const toggleBtn = container.querySelector("#toggleLeaderboardView");
-    toggleBtn.addEventListener("click", async () => {
-      const newView = isGlobalView ? "school" : "global";
-      await chrome.storage.sync.set({ leaderboardView: newView });
-      updateLeaderboard(container);
-    });
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", async () => {
+        const newView = isGlobalView ? "school" : "global";
+        localStorage.setItem("leaderboardView", newView);
+        updateLeaderboard(container);
+      });
+    }
   } catch (error) {
-    container.innerHTML = "<p>Kunne ikke indlæse ranglisten</p>";
+    
+    // Vis fejlmeddelelse
+    container.innerHTML = `
+      <p>Kunne ikke indlæse ranglisten for skolen.</p>
+      <button class="switch-view-btn" id="switchToGlobalView">Vis global rangliste</button>
+    `;
+
+    // Tilføj event listener til knappen
+    const switchButton = container.querySelector("#switchToGlobalView");
+    if (switchButton) {
+      switchButton.addEventListener("click", () => {
+        localStorage.setItem("leaderboardView", "global");
+        updateLeaderboard(container);
+      });
+    }
   }
 }
 
