@@ -17,11 +17,23 @@
       "js": ["src/content/content.js"],
       "css": ["src/content/styles.css"],
       "type": "module"
-    }
+    },
+    {
+      "matches": ["*://*.lectio.dk/*/pirat"],
+      "js": ["src/content/pirat/pirat.js"],
+      "css": ["src/content/pirat/pirat.css"],
+      
+      "type": "module"
+    } 
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/ui/components/*", "src/ui/utils/*", "src/common/*"],
+      "resources": [
+        "src/ui/components/*",
+        "src/ui/utils/*",
+        "src/common/*",
+        "src/content/pirat/images/cards/*"
+      ],
       "matches": ["*://*.lectio.dk/*"]
     }
   ],
