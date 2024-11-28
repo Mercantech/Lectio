@@ -7,6 +7,15 @@ class PiratBridgeClient {
 
     this.initializeEventListeners();
     this.fetchCards();
+    this.createSessionListBox();
+    this.requestSessionList();
+  }
+
+  createSessionListBox() {
+    const sessionListDiv = document.createElement('div');
+    sessionListDiv.id = 'session-list';
+    sessionListDiv.className = 'session-box';
+    document.getElementById('lobby').appendChild(sessionListDiv);
   }
 
   initializeEventListeners() {
@@ -61,9 +70,9 @@ class PiratBridgeClient {
         return;
       }
 
+      //"wss://localhost:7277/ws",
       const urls = [
-        "ws://localhost:5293/ws",
-        "wss://pirat.mercantec.tech/ws",
+        "wss://pirattest.mercantec.tech/ws",
       ];
 
       const tryConnect = (index) => {
@@ -114,6 +123,9 @@ class PiratBridgeClient {
         break;
       case "ERROR":
         alert(message.message);
+        break;
+      case "SESSION_LIST":
+        this.displaySessionList(message.sessions);
         break;
     }
   }
@@ -182,6 +194,28 @@ class PiratBridgeClient {
 
     cardDisplay.innerHTML = cardsBySuit;
   }
+
+  requestSessionList() {
+    this.sendCommand("LIST_SESSIONS", {});
+  }
+
+  displaySessionList(sessions) {
+    const sessionListDiv = document.getElementById("session-list");
+    sessionListDiv.innerHTML = sessions.map(session => `
+      <div class="session">
+        <span>Spil ID: ${session.gameId}</span>
+        <button onclick="window.game.joinSession('${session.gameId}')">Join</button>
+      </div>
+    `).join('');
+  }
+
+  joinSession(gameId) {
+    this.gameId = gameId;
+    this.playerName = prompt("Indtast dit navn:");
+    if (this.playerName) {
+      this.connectAndJoinGame();
+    }
+  }
 }
 
 if (window.location.pathname.endsWith('/pirat')) {
@@ -216,6 +250,7 @@ if (window.location.pathname.endsWith('/pirat')) {
         </div>
         <div id="current-hand"></div>
       </div>
+      <div id="session-list"></div>
     </div>
   `;
 
