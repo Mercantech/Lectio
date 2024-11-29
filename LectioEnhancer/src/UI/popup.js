@@ -335,12 +335,11 @@ function adjustColor(color, amount) {
     .padStart(2, "0")}${darkerB.toString(16).padStart(2, "0")}`;
 }
 
-// Tilføj denne hjælpefunktion hvis du ikke allerede har den
+
 function generateRandomColor() {
   const colors = [
     "216, 43%, 84%", 
     "101, 43%, 84%",
-    "257, 18%, 54%",
     "341, 64%, 82%",
     "31, 100%, 81%",
     "197, 100%, 87%",
