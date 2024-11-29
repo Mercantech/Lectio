@@ -337,8 +337,48 @@ function adjustColor(color, amount) {
 
 // Tilføj denne hjælpefunktion hvis du ikke allerede har den
 function generateRandomColor() {
-  const hue = Math.floor(Math.random() * 360);
-  return `hsl(${hue}, 70%, 85%)`; // Returnerer en lys farve
+  const colors = [
+    "216, 43%, 84%", 
+    "101, 43%, 84%",
+    "257, 18%, 54%",
+    "341, 64%, 82%",
+    "31, 100%, 81%",
+    "197, 100%, 87%",
+    "207, 33%, 60%",
+    "136, 42%, 85%",
+    "189, 27%, 60%",
+    "0, 100%, 75%",
+    "0, 50%, 66%",
+    "0, 100%, 77%",
+    "149, 40%, 70%",
+    "29, 34%, 58%",
+    "28, 58%, 68%",
+    "195, 22%, 75%",
+    "58, 75%, 77%",
+    "359, 68%, 79%",
+    "300, 26%, 61%",
+    "192, 72%, 70%",
+    "141, 69%, 78%",
+    "61, 76%, 86%",
+    "0, 64%, 90%",
+    "165, 52%, 66%",
+    "336, 100%, 78%",
+    "336, 100%, 87%",
+    "123, 46%, 77%",
+    "84, 21%, 63%",
+    "201, 67%, 89%",
+    "97, 26%, 80%",
+    "82, 16%, 59%",
+    "168, 52%, 71%",
+    "195, 22%, 75%",
+    "190, 30%, 80%",
+  ];
+
+
+  const random = Math.floor(Math.random() * colors.length);
+  const hue = colors[random];
+  console.log(`hsl(${hue}) 111`);
+  return `hsl(${hue})`;
 }
 
 // Tilføj disse hjælpefunktioner
