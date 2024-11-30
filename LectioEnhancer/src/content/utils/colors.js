@@ -1,13 +1,5 @@
 window.LectioEnhancer = window.LectioEnhancer || {};
 
-window.LectioEnhancer.generateRandomColor = function() {
-  const hue = Math.floor(Math.random() * 360);
-  return `hsl(${hue}, 70%, 85%)`;
-};
-
-window.LectioEnhancer.generateBorderColor = function(backgroundColor) {
-  return backgroundColor.replace("85%", "45%");
-};
 
 window.LectioEnhancer.applyGroupColors = function() {
   chrome.storage.sync.get("courseGroupColors", (data) => {

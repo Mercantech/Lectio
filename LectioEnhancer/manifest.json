@@ -19,6 +19,7 @@
         "src/content/utils/colors.js", 
         "src/content/utils/courses.js",
         "src/content/utils/schedule.js",
+        "src/content/utils/leaderboard.js",
         "src/content/content.js"
       ],
       "css": ["src/content/styles.css"]
