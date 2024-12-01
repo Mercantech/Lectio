@@ -28,12 +28,6 @@ namespace api
                                     origin.StartsWith("chrome-extension://")
                                     || origin == "https://www.lectio.dk"
                             )
-                            .WithOrigins(
-                                "https://www.lectio.dk",
-                                "chrome-extension://ifjglnjkilnjppbpdpibnlacpbblngck",
-                                "chrome-extension://pejjfdjedfeocjpnamenmbneaembcfng",
-                                "chrome-extension://ggmonojpgbklimamfhnkdknbccmmnhoc"
-                            )
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     }
