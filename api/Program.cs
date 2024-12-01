@@ -34,6 +34,17 @@ namespace api
                 );
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    }
+                );
+            });
+
             // Konfigurer database connection
             string connectionString =
                 builder.Configuration.GetConnectionString("DefaultConnection")
@@ -93,7 +104,7 @@ namespace api
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseCors("AllowLectioAndExtensions");
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
