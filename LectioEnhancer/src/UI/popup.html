@@ -11,34 +11,16 @@
       <div class="menu">
         <button class="menu-item" data-section="main">Hovedmenu</button>
         <button class="menu-item" data-section="colors">Farve Vælger</button>
-        <button class="menu-item" data-section="settings">Indstillinger</button>
-        <button class="menu-item" data-section="admin">Admin</button>
-        <button id="logoutBtn" class="menu-item hidden">
-          <span class="btn-icon">🚪</span> Log ud
-        </button>
+        <!-- <button class="menu-item" data-section="settings">Indstillinger</button> -->
+        <!-- <button class="menu-item" data-section="admin">Admin</button> -->
       </div>
 
       <div id="mainSection" class="section">
-        <h2>Hovedmenu</h2>
+        <!-- <h2>Hovedmenu</h2> -->
         <div id="userArea" class="user-controls">
-          <div id="authButtons">
-            <button id="oneClickSignup" class="auth-btn">
-              <span class="btn-icon">👤</span> Opret
-            </button>
-            <button id="simpleLogin" class="auth-btn">
-              <span class="btn-icon">🔑</span> Log ind
-            </button>
-          </div>
+          <div class="auth-status">Bruger ikke logget ind</div>
         </div>
         <div class="courses-container">
-          <div class="category-controls">
-            <input
-              type="text"
-              id="newCategoryInput"
-              placeholder="Ny kategori navn"
-            />
-            <button id="addCategoryBtn">Tilføj Kategori</button>
-          </div>
           <h3>Dine kurser</h3>
           <div id="coursesList" class="courses-list drag-enabled"></div>
         </div>
@@ -81,6 +63,6 @@
         </div>
       </div>
     </div>
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
   </body>
 </html>

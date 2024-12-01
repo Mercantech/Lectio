@@ -14,23 +14,29 @@
   "content_scripts": [
     {
       "matches": ["*://*.lectio.dk/*"],
-      "js": ["src/content/content.js"],
-      "css": ["src/content/styles.css"],
-      "type": "module"
+      "js": [
+        "src/content/utils/darkMode.js",
+        "src/content/utils/colors.js", 
+        "src/content/utils/courses.js",
+        "src/content/utils/schedule.js",
+        "src/content/utils/leaderboard.js",
+        "src/content/content.js"
+      ],
+      "css": ["src/content/styles.css"]
     },
     {
       "matches": ["*://*.lectio.dk/*/pirat"],
       "js": ["src/content/pirat/pirat.js"],
-      "css": ["src/content/pirat/pirat.css"],
-      
-      "type": "module"
-    } 
+      "css": ["src/content/pirat/pirat.css"]
+    }
   ],
   "web_accessible_resources": [
     {
       "resources": [
+        "src/content/utils/*",
         "src/ui/components/*",
         "src/ui/utils/*",
+        "src/ui/modules/*",
         "src/common/*",
         "src/content/pirat/images/cards/*"
       ],
@@ -40,5 +46,8 @@
   "icons": {
     "48": "src/icons/icon48.png",
     "128": "src/icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   }
 }
