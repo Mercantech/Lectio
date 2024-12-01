@@ -124,4 +124,3 @@ export function debounce(func, wait) {
     };
 }
 
-// Andre hjælpefunktioner... 

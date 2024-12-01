@@ -223,7 +223,6 @@ export function loadCourseList() {
 import { generateRandomColor } from './colors.js';
 
 function generateBorderColor(backgroundColor) {
-    // Implementer denne funktion baseret på dine behov
     return adjustColor(backgroundColor, -20);
 }
 
