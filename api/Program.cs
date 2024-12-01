@@ -23,14 +23,16 @@ namespace api
                     builder =>
                     {
                         builder
-                            .SetIsOriginAllowed(origin =>
-                                origin.StartsWith("chrome-extension://")
-                                || origin == "https://www.lectio.dk"
+                            .SetIsOriginAllowed(
+                                origin =>
+                                    origin.StartsWith("chrome-extension://")
+                                    || origin == "https://www.lectio.dk"
                             )
                             .WithOrigins(
                                 "https://www.lectio.dk",
                                 "chrome-extension://ifjglnjkilnjppbpdpibnlacpbblngck",
-                                "chrome-extension://pejjfdjedfeocjpnamenmbneaembcfng"
+                                "chrome-extension://pejjfdjedfeocjpnamenmbneaembcfng",
+                                "chrome-extension://ggmonojpgbklimamfhnkdknbccmmnhoc"
                             )
                             .AllowAnyMethod()
                             .AllowAnyHeader();
@@ -43,8 +45,8 @@ namespace api
                 builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? Environment.GetEnvironmentVariable("DefaultConnection");
 
-            builder.Services.AddDbContext<LectioEnhancerDBContext>(options =>
-                options.UseNpgsql(connectionString)
+            builder.Services.AddDbContext<LectioEnhancerDBContext>(
+                options => options.UseNpgsql(connectionString)
             );
 
             // Hent JWT indstillinger fra konfiguration eller miljøvariabler
@@ -71,8 +73,8 @@ namespace api
             }
 
             // Konfigurer JWT Authentication
-            builder
-                .Services.AddAuthentication(x =>
+            builder.Services
+                .AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
