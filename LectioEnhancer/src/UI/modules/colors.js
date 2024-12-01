@@ -45,22 +45,22 @@ export async function displayColorPickers() {
     groupColorsList.innerHTML = "<h3>Fagfarver</h3>";
 
     const courses = await loadCourseList();
-    const courseNames = Object.keys(courses).sort();
+    const subjects = Object.keys(courses).sort();
 
     chrome.storage.sync.get("courseGroupColors", (data) => {
         const groupColors = data.courseGroupColors || {};
 
-        courseNames.forEach((courseName) => {
+        subjects.forEach((subject) => {
             const colorGroup = document.createElement("div");
             colorGroup.className = "color-group";
 
             const label = document.createElement("label");
-            label.textContent = courseName;
+            label.textContent = `${subject} Kurser`;
 
             const colorPicker = document.createElement("input");
             colorPicker.type = "color";
             colorPicker.className = "color-preview-picker";
-            const currentColor = groupColors[courseName]?.background || generateRandomColor();
+            const currentColor = groupColors[subject]?.background || generateRandomColor();
             let hexColor = currentColor;
 
             if (currentColor.startsWith("hsl")) {
@@ -69,7 +69,7 @@ export async function displayColorPickers() {
             }
 
             colorPicker.value = hexColor;
-            colorPicker.dataset.course = courseName;
+            colorPicker.dataset.subject = subject;
 
             const randomButton = document.createElement("button");
             randomButton.textContent = "🎲";
@@ -98,12 +98,12 @@ export function saveColorChoices() {
     const newColors = {};
 
     colorPickers.forEach((picker) => {
-        const courseName = picker.dataset.course;
+        const subject = picker.dataset.subject;
         const hexColor = picker.value;
-        const backgroundColor = hexColor;
+        const backgroundColor = picker.dataset.originalColor || hexColor;
         const borderColor = adjustColor(backgroundColor, -20);
 
-        newColors[courseName] = {
+        newColors[subject] = {
             background: backgroundColor,
             border: borderColor,
         };
@@ -114,8 +114,6 @@ export function saveColorChoices() {
             chrome.tabs.sendMessage(tabs[0].id, {
                 action: "updateColors",
                 colors: newColors,
-            }, () => {
-                displayColorPickers();
             });
         });
     });

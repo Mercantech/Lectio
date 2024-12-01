@@ -3,6 +3,7 @@ function enhanceLectio() {
   LectioEnhancer.initDarkMode();
   createDrawer();
   LectioEnhancer.enhanceSchedulePage();
+  LectioEnhancer.enhanceNavigation();
 }
 
 function createDrawer() {
@@ -92,15 +93,15 @@ function extractUserInfo() {
   const spanText = nameSpan.textContent;
 
   if (spanText.startsWith("Eleven")) {
-    name = spanText.replace("Eleven ", "").split(",")[0].trim();
+    name = spanText.replace("Eleven ", "").split(" ")[0].trim();
   } else if (spanText.startsWith("Læreren")) {
-    name = spanText.split("-")[1].trim();
+    name = spanText.split("-")[1].trim().split(" ")[0];
   } else {
     return null;
   }
 
   return {
-    name: name,
+    name: `Hej ${name} 👋`,
     schoolId: schoolId,
   };
 }

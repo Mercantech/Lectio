@@ -4,8 +4,8 @@ export async function setupAuth() {
     // Tjek login status og opret/log ind automatisk hvis ikke logget ind
     chrome.storage.sync.get(["authToken", "currentUser"], async (data) => {
         if (data.authToken && data.currentUser) {
-            // Bruger er allerede logget ind
-            userArea.innerHTML = `<div class="auth-status">Logget ind som: ${data.currentUser.name}</div>`;
+            // Bruger er allerede logget ind - med kort hilsen
+            userArea.innerHTML = `<div class="auth-status">Hej ${data.currentUser.name.split(' ')[0]} 👋</div>`;
         } else {
             // Vis "ikke logget ind" besked
             userArea.innerHTML = `<div class="auth-status">Bruger ikke logget ind</div>`;
@@ -79,16 +79,16 @@ async function handleSuccessfulAuth(data, userInfo) {
             schoolId: userInfo.schoolId,
         },
     });
-    document.getElementById("userArea").innerHTML = `<div class="auth-status">Logget ind som: ${data.name}</div>`;
+    // Opdateret velkomstbesked
+    document.getElementById("userArea").innerHTML = `<div class="auth-status">Hej ${data.name.split(' ')[0]} 👋</div>`;
 }
 
-// Beholder updateUserDisplay funktionen
+// Beholder updateUserDisplay funktionen med opdateret format
 export function updateUserDisplay(username) {
     const userDisplay = document.createElement("div");
     userDisplay.className = "user-info";
     userDisplay.innerHTML = `
-        <span class="user-icon">👤</span>
-        <span class="username">${username}</span>
+        <span class="username">Hej ${username.split(' ')[0]} 👋</span>
     `;
 
     document.querySelector(".header")?.appendChild(userDisplay);
