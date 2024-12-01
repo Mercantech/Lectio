@@ -9,12 +9,13 @@ window.LectioEnhancer.updateLeaderboard = async function(container) {
   `;
 
   try {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const storage = await chrome.storage.sync.get(["currentUser"]);
+    const currentUser = storage.currentUser;
     const isGlobalView = localStorage.getItem("leaderboardView") !== "school";
 
     const endpoint = isGlobalView
-      ? "https://lectio-api.onrender.com/api/Leaderboard/Top10"
-      : `https://lectio-api.onrender.com/api/Leaderboard/school/${currentUser.schoolId}`;
+      ? "https://lectioapi.mercantec.tech/api/Leaderboard/Top10"
+      : `https://lectioapi.mercantec.tech/api/Leaderboard/school/${currentUser.schoolId}`;
 
     const response = await fetch(endpoint);
     const data = await response.json();
@@ -56,6 +57,7 @@ window.LectioEnhancer.updateLeaderboard = async function(container) {
       });
     }
   } catch (error) {
+    console.error("Leaderboard fejl:", error);
     container.innerHTML = `
       <p>Kunne ikke indlæse ranglisten for skolen.</p>
       <button class="switch-view-btn" id="switchToGlobalView">Vis global rangliste</button>

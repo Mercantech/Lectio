@@ -1,12 +1,11 @@
 import { setupAuth } from './modules/auth.js';
 import { displayColorPickers } from './modules/colors.js';
-import { displayCourses, setupCategoryControls } from './modules/courses.js';
+import { displayCourses } from './modules/courses.js';
 import { displayStorageData } from './modules/storage.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     displayCourses();
     setupMenu();
-    setupCategoryControls();
     setupAuth();
 });
 

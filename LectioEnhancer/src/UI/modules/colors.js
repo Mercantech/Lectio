@@ -45,22 +45,22 @@ export async function displayColorPickers() {
     groupColorsList.innerHTML = "<h3>Fagfarver</h3>";
 
     const courses = await loadCourseList();
-    const subjects = Object.keys(courses).sort();
+    const courseNames = Object.keys(courses).sort();
 
     chrome.storage.sync.get("courseGroupColors", (data) => {
         const groupColors = data.courseGroupColors || {};
 
-        subjects.forEach((subject) => {
+        courseNames.forEach((courseName) => {
             const colorGroup = document.createElement("div");
             colorGroup.className = "color-group";
 
             const label = document.createElement("label");
-            label.textContent = `${subject} Kurser`;
+            label.textContent = courseName;
 
             const colorPicker = document.createElement("input");
             colorPicker.type = "color";
             colorPicker.className = "color-preview-picker";
-            const currentColor = groupColors[subject]?.background || generateRandomColor();
+            const currentColor = groupColors[courseName]?.background || generateRandomColor();
             let hexColor = currentColor;
 
             if (currentColor.startsWith("hsl")) {
@@ -69,7 +69,7 @@ export async function displayColorPickers() {
             }
 
             colorPicker.value = hexColor;
-            colorPicker.dataset.subject = subject;
+            colorPicker.dataset.course = courseName;
 
             const randomButton = document.createElement("button");
             randomButton.textContent = "🎲";
@@ -98,12 +98,12 @@ export function saveColorChoices() {
     const newColors = {};
 
     colorPickers.forEach((picker) => {
-        const subject = picker.dataset.subject;
+        const courseName = picker.dataset.course;
         const hexColor = picker.value;
-        const backgroundColor = picker.dataset.originalColor || hexColor;
+        const backgroundColor = hexColor;
         const borderColor = adjustColor(backgroundColor, -20);
 
-        newColors[subject] = {
+        newColors[courseName] = {
             background: backgroundColor,
             border: borderColor,
         };
@@ -114,6 +114,8 @@ export function saveColorChoices() {
             chrome.tabs.sendMessage(tabs[0].id, {
                 action: "updateColors",
                 colors: newColors,
+            }, () => {
+                displayColorPickers();
             });
         });
     });

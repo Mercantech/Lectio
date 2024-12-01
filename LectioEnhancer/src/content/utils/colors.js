@@ -1,37 +1,53 @@
 window.LectioEnhancer = window.LectioEnhancer || {};
 
-
 window.LectioEnhancer.applyGroupColors = function() {
-  chrome.storage.sync.get("courseGroupColors", (data) => {
+  chrome.storage.sync.get(["courseGroupColors", "lectioEnhancerCourses"], (data) => {
     let groupColors = data.courseGroupColors || {};
+    let courses = data.lectioEnhancerCourses || {};
     let hasNewColors = false;
 
+    console.log('Tilgængelige kurser:', courses);
+
     document.querySelectorAll(".s2skemabrik").forEach((element) => {
-      const courseElements = element.querySelectorAll(
-        '[data-lectiocontextcard^="HE"]'
+      const holdElements = element.querySelectorAll('[data-lectiocontextcard^="HE"]');
+      const holdNames = Array.from(holdElements).map(el => el.textContent.trim());
+      
+      console.log('Skemabrik indeholder hold:', holdNames);
+      
+      const matchingCourse = Object.keys(courses).find(course => 
+        holdNames.some(holdName => holdName === course)
       );
 
-      courseElements.forEach((course) => {
-        const courseName = course.textContent.trim();
-        const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
+      console.log('Matchende kursus:', matchingCourse);
 
-        if (subjectMatch) {
-          const subject = subjectMatch[1].toUpperCase();
-
-          if (!groupColors[subject]) {
-            const backgroundColor = LectioEnhancer.generateRandomColor();
-            const borderColor = LectioEnhancer.generateBorderColor(backgroundColor);
-            groupColors[subject] = {
-              background: backgroundColor,
-              border: borderColor,
-            };
-            hasNewColors = true;
-          }
-
-          element.style.backgroundColor = groupColors[subject].background;
-          element.style.borderLeft = `4px solid ${groupColors[subject].border}`;
+      if (matchingCourse) {
+        console.log('Fandt match for:', matchingCourse);
+        
+        if (!groupColors[matchingCourse]) {
+          const backgroundColor = LectioEnhancer.generateRandomColor();
+          const borderColor = LectioEnhancer.generateBorderColor(backgroundColor);
+          groupColors[matchingCourse] = {
+            background: backgroundColor,
+            border: borderColor,
+          };
+          hasNewColors = true;
+          console.log('Ny farve genereret for:', matchingCourse, backgroundColor);
         }
-      });
+
+        const currentStyle = element.getAttribute('style') || '';
+        const updatedStyle = currentStyle
+          .replace(/background-color:[^;]+;?/, '')
+          .replace(/border-left:[^;]+;?/, '');
+        
+        const newStyle = `
+          ${updatedStyle}
+          background-color: ${groupColors[matchingCourse].background} !important;
+          border-left: 4px solid ${groupColors[matchingCourse].border} !important;
+        `.trim();
+        
+        console.log('Anvendt style:', newStyle);
+        element.setAttribute('style', newStyle);
+      }
     });
 
     if (hasNewColors) {

@@ -56,21 +56,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   }
   if (request.action === "updateColors") {
-    const elements = document.querySelectorAll(".s2skemabrik");
-    elements.forEach((element) => {
-      const courseElements = element.querySelectorAll('[data-lectiocontextcard^="HE"]');
-      courseElements.forEach((course) => {
-        const courseName = course.textContent.trim();
-        const subjectMatch = courseName.match(/\b([A-Za-z]{2,3})$/);
-        if (subjectMatch) {
-          const subject = subjectMatch[1].toUpperCase();
-          if (request.colors[subject]) {
-            element.style.backgroundColor = request.colors[subject].background;
-            element.style.borderLeft = `4px solid ${request.colors[subject].border}`;
-          }
-        }
-      });
-    });
+    LectioEnhancer.applyGroupColors();
     sendResponse({ success: true });
   }
   if (request.action === "getUserInfo") {

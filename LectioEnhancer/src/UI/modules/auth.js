@@ -5,7 +5,6 @@ export async function setupAuth() {
     chrome.storage.sync.get(["authToken", "currentUser"], async (data) => {
         if (data.authToken && data.currentUser) {
             // Bruger er allerede logget ind
-            document.getElementById("logoutBtn").classList.remove("hidden");
             userArea.innerHTML = `<div class="auth-status">Logget ind som: ${data.currentUser.name}</div>`;
         } else {
             // Vis "ikke logget ind" besked
@@ -26,7 +25,7 @@ export async function setupAuth() {
 
                 // Forsøg at logge ind først
                 const loginResponse = await fetch(
-                    "https://lectio-api.onrender.com/api/Users/simple-login",
+                    "https://lectioapi.mercantec.tech/api/Users/simple-login",
                     {
                         method: "POST",
                         headers: {
@@ -42,7 +41,7 @@ export async function setupAuth() {
                 // Hvis login fejler, opret ny bruger
                 if (!loginResponse.ok) {
                     const signupResponse = await fetch(
-                        "https://lectio-api.onrender.com/api/Users/simple",
+                        "https://lectioapi.mercantec.tech/api/Users/simple",
                         {
                             method: "POST",
                             headers: {
@@ -68,15 +67,6 @@ export async function setupAuth() {
             }
         }
     });
-
-    // Setup logout (beholder logout funktionaliteten)
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn?.addEventListener("click", () => {
-        chrome.storage.sync.remove(["authToken", "currentUser"], () => {
-            document.getElementById("logoutBtn").classList.add("hidden");
-            userArea.innerHTML = `<div class="auth-status">Bruger ikke logget ind</div>`;
-        });
-    });
 }
 
 // Hjælpefunktion til at håndtere vellykket auth
@@ -89,7 +79,6 @@ async function handleSuccessfulAuth(data, userInfo) {
             schoolId: userInfo.schoolId,
         },
     });
-    document.getElementById("logoutBtn").classList.remove("hidden");
     document.getElementById("userArea").innerHTML = `<div class="auth-status">Logget ind som: ${data.name}</div>`;
 }
 
