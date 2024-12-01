@@ -25,17 +25,19 @@ namespace API.Controllers
         }
 
         // GET: api/Users
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            var users = await _context
-                .Users.Select(item => new UserDTO
-                {
-                    Id = item.Id,
-                    Email = item.Email,
-                    Name = item.Name,
-                })
+            var users = await _context.Users
+                .Select(
+                    item =>
+                        new UserDTO
+                        {
+                            Id = item.Id,
+                            Email = item.Email,
+                            Name = item.Name,
+                        }
+                )
                 .ToListAsync();
 
             return Ok(users);

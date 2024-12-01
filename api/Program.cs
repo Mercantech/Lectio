@@ -16,24 +16,7 @@ namespace api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(
-                    "AllowLectioAndExtensions",
-                    builder =>
-                    {
-                        builder
-                            .SetIsOriginAllowed(
-                                origin =>
-                                    origin.StartsWith("chrome-extension://")
-                                    || origin == "https://www.lectio.dk"
-                            )
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    }
-                );
-            });
-
+            // Konfigurer CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(
