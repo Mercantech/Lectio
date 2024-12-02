@@ -138,13 +138,21 @@ class PiratBridgeClient {
     const bettingControls = document.getElementById("betting-controls");
     bettingControls.classList.toggle("hidden", state.state !== "Betting");
 
+    const startGameButton = document.getElementById("start-game");
+    const canStartGame = state.players.length >= 2 && 
+                        state.state === "Ready" && 
+                        state.players[0].name === this.playerName;
+    
+    if (startGameButton) {
+      startGameButton.classList.toggle("hidden", !canStartGame);
+    }
+
     document.getElementById("lobby").classList.add("hidden");
     document.getElementById("game-board").classList.remove("hidden");
 
     const playersDiv = document.getElementById("players");
     playersDiv.innerHTML = state.players
       .map((player) => {
-        console.log("Player data:", player); // Debug logging
         return `<div>${player.name || "Ukendt"}: ${
           player.score || 0
         } point</div>`;
@@ -248,6 +256,7 @@ if (window.location.pathname.endsWith('/pirat')) {
           <input type="number" id="num-matches" min="1" max="3" value="1">
           <button id="take-matches">Tag tændstikker</button>
         </div>
+        <button id="start-game" class="hidden">Start spil</button>
         <div id="current-hand"></div>
       </div>
       <div id="session-list"></div>
@@ -259,6 +268,10 @@ if (window.location.pathname.endsWith('/pirat')) {
   // Start spillet når siden er indlæst
   window.addEventListener("load", () => {
     window.game = new PiratBridgeClient();
+    
+    document.getElementById("start-game").addEventListener("click", () => {
+        window.game.sendCommand("START_GAME", { gameId: window.game.gameId });
+    });
   });
 
   document.getElementById("take-matches").addEventListener("click", () => {

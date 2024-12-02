@@ -1,12 +1,12 @@
 function enhanceLectio() {
+  console.log("Enhancing Lectio...");
   document.body.classList.add("lectio-enhanced");
   LectioEnhancer.initDarkMode();
-  createDrawer();
+  createUnifiedDrawer();
   LectioEnhancer.enhanceSchedulePage();
-  LectioEnhancer.enhanceNavigation();
 }
 
-function createDrawer() {
+function createUnifiedDrawer() {
   const drawer = document.createElement("div");
   drawer.className = "lectio-drawer";
 
@@ -26,6 +26,12 @@ function createDrawer() {
         <span class="mode-icon">🌙</span>
         Dark Mode
       </button>
+      <div class="drawer-messages">
+        <h3>Beskeder</h3>
+        <div class="message-list">
+          <div class="loading">Indlæser beskeder...</div>
+        </div>
+      </div>
     </div>
   `;
   document.body.appendChild(drawer);
@@ -47,6 +53,36 @@ function createDrawer() {
     const icon = darkModeBtn.querySelector(".mode-icon");
     icon.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
   });
+
+  // Hent gemte beskeder fra storage
+  chrome.storage.local.get(['lectioMessages'], (data) => {
+    console.log("Got messages from storage:", data);
+    if (data.lectioMessages) {
+      updateMessageList(data.lectioMessages);
+    }
+  });
+
+  // Lyt efter opdateringer fra background script
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "updateMessages") {
+      updateMessageList(request.messages);
+    }
+  });
+}
+
+function updateMessageList(messages) {
+  const messageList = document.querySelector('.message-list');
+  if (!messageList) return;
+
+  messageList.innerHTML = messages.map(msg => `
+    <div class="message-item">
+      <div class="message-subject">${msg.subject}</div>
+      <div class="message-info">
+        <span class="message-sender">${msg.sender}</span>
+        <span class="message-date">${msg.date}</span>
+      </div>
+    </div>
+  `).join('');
 }
 
 // Message listeners
@@ -101,7 +137,7 @@ function extractUserInfo() {
   }
 
   return {
-    name: `Hej ${name} 👋`,
+    name: name,
     schoolId: schoolId,
   };
 }
