@@ -10,7 +10,8 @@ function createUnifiedDrawer() {
   const drawer = document.createElement("div");
   drawer.className = "lectio-drawer";
 
-  const isDrawerOpen = localStorage.getItem("lectioEnhancerDrawerOpen") === "true";
+  const isDrawerOpen =
+    localStorage.getItem("lectioEnhancerDrawerOpen") === "true";
   if (isDrawerOpen) {
     drawer.classList.add("open");
   }
@@ -26,11 +27,37 @@ function createUnifiedDrawer() {
         <span class="mode-icon">🌙</span>
         Dark Mode
       </button>
+      
       <div class="drawer-messages">
         <h3>Beskeder</h3>
         <div class="message-list">
           <div class="loading">Indlæser beskeder...</div>
         </div>
+      </div>
+      <br />
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>
+            Skjul hold med
+            <span class="tooltip" data-tooltip="Adskil flere hold med komma">ℹ️</span>
+          </label>
+          <div class="tag-container" id="hide-tags-container">
+            <input type="text" class="tag-input" id="filter-hide-input" placeholder="Tryk Enter for at tilføje" />
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>
+            Behold kun hold med
+            <span class="tooltip" data-tooltip="Adskil flere hold med komma">ℹ️</span>
+          </label>
+          <div class="tag-container" id="show-tags-container">
+            <input type="text" class="tag-input" id="filter-show-input" placeholder="Tryk Enter for at tilføje" />
+          </div>
+        </div>
+        <button id="apply-filters-button">
+          <span class="filter-icon">🔍</span>
+          Anvend filtre
+        </button>
       </div>
     </div>
   `;
@@ -51,11 +78,49 @@ function createUnifiedDrawer() {
   darkModeBtn.addEventListener("click", () => {
     LectioEnhancer.toggleDarkMode();
     const icon = darkModeBtn.querySelector(".mode-icon");
-    icon.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+    icon.textContent = document.body.classList.contains("dark-mode")
+      ? "☀️"
+      : "🌙";
+  });
+
+  const filterHideInput = document.getElementById("filter-hide-input");
+  const filterShowInput = document.getElementById("filter-show-input");
+  const applyFiltersButton = document.getElementById("apply-filters-button");
+
+  // Hent gemte filtre fra storage
+  chrome.storage.local.get(["lectioFilters"], (result) => {
+    const savedFilters = result.lectioFilters || {
+      hide: ["inf", "it", "da"],
+      show: ["dt4h2301aug", "pak"],
+    };
+    filterHideInput.value = savedFilters.hide.join(", ");
+    filterShowInput.value = savedFilters.show.join(", ");
+  });
+
+  applyFiltersButton.addEventListener("click", () => {
+    const hideFilters = filterHideInput.value
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f.length > 0);
+
+    const showFilters = filterShowInput.value
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f.length > 0);
+
+    // Gem filtrene til senere brug
+    chrome.storage.local.set({
+      lectioFilters: {
+        hide: hideFilters,
+        show: showFilters,
+      },
+    });
+
+    applyBothFilters(hideFilters, showFilters);
   });
 
   // Hent gemte beskeder fra storage
-  chrome.storage.local.get(['lectioMessages'], (data) => {
+  chrome.storage.local.get(["lectioMessages"], (data) => {
     console.log("Got messages from storage:", data);
     if (data.lectioMessages) {
       updateMessageList(data.lectioMessages);
@@ -71,10 +136,12 @@ function createUnifiedDrawer() {
 }
 
 function updateMessageList(messages) {
-  const messageList = document.querySelector('.message-list');
+  const messageList = document.querySelector(".message-list");
   if (!messageList) return;
 
-  messageList.innerHTML = messages.map(msg => `
+  messageList.innerHTML = messages
+    .map(
+      (msg) => `
     <div class="message-item">
       <div class="message-subject">${msg.subject}</div>
       <div class="message-info">
@@ -82,7 +149,9 @@ function updateMessageList(messages) {
         <span class="message-date">${msg.date}</span>
       </div>
     </div>
-  `).join('');
+  `
+    )
+    .join("");
 }
 
 // Message listeners
@@ -105,6 +174,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const isLoggedIn = !!userElement;
     const username = isLoggedIn ? userElement.textContent.trim() : null;
     sendResponse({ isLoggedIn, username });
+  }
+  if (request.action === "filterRows") {
+    filterRowsByHold(request.substring);
   }
   return true;
 });
@@ -140,6 +212,62 @@ function extractUserInfo() {
     name: name,
     schoolId: schoolId,
   };
+}
+
+function filterRowsByHold(filters, mode = "hide") {
+  // Find alle table rows, undtagen header rows
+  const rows = document.querySelectorAll(
+    "tbody tr:not(:first-child):not(:last-child)"
+  );
+
+  rows.forEach((row) => {
+    // Find span elementet i første celle der indeholder holdnavnet
+    const holdSpan = row.querySelector("td span[data-lectiocontextcard]");
+
+    if (holdSpan) {
+      const holdText = holdSpan.textContent.toLowerCase();
+      const matchesFilter = filters.some((filter) =>
+        holdText.includes(filter.toLowerCase())
+      );
+
+      if (mode === "hide") {
+        // Skjul rækker der matcher filtrene
+        row.style.display = matchesFilter ? "none" : "";
+      } else if (mode === "show") {
+        // Vis kun rækker der matcher filtrene
+        row.style.display = matchesFilter ? "" : "none";
+      }
+    }
+  });
+}
+
+function applyBothFilters(hideFilters, showFilters) {
+  // Find alle table rows, undtagen header rows
+  const rows = document.querySelectorAll(
+    "tbody tr:not(:first-child):not(:last-child)"
+  );
+
+  rows.forEach((row) => {
+    // Find span elementet i første celle der indeholder holdnavnet
+    const holdSpan = row.querySelector("td span[data-lectiocontextcard]");
+
+    if (holdSpan) {
+      const holdText = holdSpan.textContent.toLowerCase();
+
+      // Tjek om rækken matcher nogle af hide-filtrene
+      const shouldHide = hideFilters.some((filter) =>
+        holdText.includes(filter.toLowerCase())
+      );
+
+      // Tjek om rækken matcher nogle af show-filtrene
+      const shouldShow =
+        showFilters.length === 0 ||
+        showFilters.some((filter) => holdText.includes(filter.toLowerCase()));
+
+      // Vis kun rækken hvis den IKKE skal skjules OG den skal vises
+      row.style.display = !shouldHide && shouldShow ? "" : "none";
+    }
+  });
 }
 
 // Initialiser når siden er indlæst
