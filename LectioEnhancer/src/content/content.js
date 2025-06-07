@@ -58,6 +58,10 @@ function createUnifiedDrawer() {
           <span class="filter-icon">🔍</span>
           Anvend filtre
         </button>
+        <button id="copy-filtered-table-button" class="apply-filters-btn gradient-btn" style="margin-top:8px;">
+          <span class="filter-icon">📋</span>
+          Kopiér synlig tabel
+        </button>
       </div>
     </div>
   `;
@@ -132,6 +136,12 @@ function createUnifiedDrawer() {
     if (request.action === "updateMessages") {
       updateMessageList(request.messages);
     }
+  });
+
+  // --- KOPIER TABEL KNAP ---
+  const copyFilteredTableButton = document.getElementById("copy-filtered-table-button");
+  copyFilteredTableButton.addEventListener("click", () => {
+    copyVisibleFilteredTableRows();
   });
 }
 
@@ -268,6 +278,48 @@ function applyBothFilters(hideFilters, showFilters) {
       row.style.display = !shouldHide && shouldShow ? "" : "none";
     }
   });
+}
+
+// Funktion til at kopiere synlige rækker fra aktivitetsplan-tabellen (kun hoved-tbody)
+function copyVisibleFilteredTableRows() {
+  const table = document.getElementById("m_Content_aktivitetsplanDynamicTable");
+  if (!table) {
+    showToast("Tabellen med aktivitetsplanen blev ikke fundet!", true);
+    return;
+  }
+  // Find første tbody direkte under tabellen
+  const tbody = table.querySelector(":scope > tbody");
+  if (!tbody) {
+    showToast("Ingen tbody fundet i aktivitetsplan-tabellen!", true);
+    return;
+  }
+  const rows = Array.from(tbody.children).filter(row => row.tagName === "TR");
+  let output = [];
+  rows.forEach(row => {
+    if (row.style.display === "none") return;
+    if (window.getComputedStyle(row).display === "none") return;
+    let cells = Array.from(row.children).map(cell => cell.innerText.trim());
+    output.push(cells.join("\t"));
+  });
+  const text = output.join("\n");
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Tabel kopieret til udklipsholderen! Du kan nu indsætte i Google Sheets eller Excel.");
+  });
+}
+
+// Toast-funktion
+function showToast(message, isError = false) {
+  let toast = document.createElement("div");
+  toast.className = "lectio-toast" + (isError ? " error" : "");
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
 // Initialiser når siden er indlæst

@@ -927,3 +927,58 @@ body.dark-mode,
 .dark-mode #apply-filters-button {
   background: linear-gradient(135deg, #4a6cf7, #2d3b8f);
 }
+
+.gradient-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-top: 0.5em;
+}
+
+.gradient-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+  background: linear-gradient(135deg, #4a6cf7, #6e8efb);
+}
+
+.gradient-btn:active {
+  transform: translateY(0);
+}
+
+.lectio-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  min-width: 260px;
+  max-width: 90vw;
+  background: #323232;
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(40px);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 99999;
+  font-size: 1rem;
+}
+.lectio-toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.lectio-toast.error {
+  background: #c0392b;
+  color: #fff;
+}
