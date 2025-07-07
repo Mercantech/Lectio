@@ -606,9 +606,7 @@ body.dark-mode,
 }
 
 /* Skjul header elementer */
-#s_m_masterHeaderDiv,
-.ls-master-header-institution,
-#s_m_masterleftDiv,
+.ls-master-header-institution-name,
 .ls-master-header-logo,
 .thumber {
   display: none !important;
