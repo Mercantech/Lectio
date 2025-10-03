@@ -980,3 +980,25 @@ body.dark-mode,
   background: #c0392b;
   color: #fff;
 }
+
+/* Sticky første kolonne på aktivitetsplan-tabellen */
+#m_Content_aktivitetsplanDynamicTable th:first-child,
+#m_Content_aktivitetsplanDynamicTable td:first-child {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 2;
+}
+.dark-mode #m_Content_aktivitetsplanDynamicTable th:first-child,
+.dark-mode #m_Content_aktivitetsplanDynamicTable td:first-child {
+  background: #2d2d2d;
+}
+
+#m_Content_aktivitetsplanDynamicTable th {
+  z-index: 3;
+}
+
+/* CSS regel til at skjule ls-dfv-100-IG elementer */
+.ls-dfv-100-IG {
+  display: none !important;
+}

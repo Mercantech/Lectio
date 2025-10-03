@@ -4,6 +4,12 @@ function enhanceLectio() {
   LectioEnhancer.initDarkMode();
   createUnifiedDrawer();
   LectioEnhancer.enhanceSchedulePage();
+  
+  // Initialiser automatisk skjuling af ls-dfv-100-IG elementer
+  LectioEnhancer.initAutoHideObserver();
+  
+  // Skjul eksisterende elementer med ls-dfv-100-IG klasse
+  LectioEnhancer.hideElementsWithClass();
 }
 
 function createUnifiedDrawer() {
@@ -34,7 +40,8 @@ function createUnifiedDrawer() {
           <div class="loading">Indlæser beskeder...</div>
         </div>
       </div>
-      <br />
+      
+<br />
       <div class="filter-section">
         <div class="filter-group">
           <label>
@@ -143,6 +150,7 @@ function createUnifiedDrawer() {
   copyFilteredTableButton.addEventListener("click", () => {
     copyVisibleFilteredTableRows();
   });
+
 }
 
 function updateMessageList(messages) {
@@ -163,6 +171,7 @@ function updateMessageList(messages) {
     )
     .join("");
 }
+
 
 // Message listeners
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

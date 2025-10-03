@@ -20,6 +20,7 @@
         "src/content/utils/courses.js",
         "src/content/utils/schedule.js",
         "src/content/utils/leaderboard.js",
+        "src/content/utils/autoSave.js",
         "src/content/content.js"
       ],
       "css": [
