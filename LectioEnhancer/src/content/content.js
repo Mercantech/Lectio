@@ -94,6 +94,7 @@ function createUnifiedDrawer() {
       : "🌙";
   });
 
+
   const filterHideInput = document.getElementById("filter-hide-input");
   const filterShowInput = document.getElementById("filter-show-input");
   const applyFiltersButton = document.getElementById("apply-filters-button");

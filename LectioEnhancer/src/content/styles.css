@@ -4,6 +4,11 @@
   line-height: 1.5;
 }
 
+/* Skjul logout elementet automatisk */
+.lectio-enhanced #m_ctl26 {
+  display: none !important;
+}
+
 /* Skema-specifik styling */
 .enhanced-schedule {
   max-width: 1200px;
