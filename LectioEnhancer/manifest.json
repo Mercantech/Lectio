@@ -21,6 +21,7 @@
         "src/content/utils/schedule.js",
         "src/content/utils/leaderboard.js",
         "src/content/utils/autoSave.js",
+        "src/content/utils/tidsreg.js",
         "src/content/content.js"
       ],
       "css": [

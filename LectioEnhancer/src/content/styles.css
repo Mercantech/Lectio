@@ -1007,3 +1007,437 @@ body.dark-mode,
 .ls-dfv-100-IG {
   display: none !important;
 }
+
+/* --- Tidsregistrering (lærer årsopgørelse) --- */
+@media screen {
+  .lectio-enhanced #s_m_Content_Content_TidsregInputIsland_pa > div[style*="780"] {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .lectio-enhanced #s_m_Content_Content_SendToArea1 {
+    max-width: 100%;
+  }
+
+  .lectio-enhanced #s_m_Content_Content_TidsregInputGV {
+    width: 100%;
+  }
+}
+
+.lectio-enhancer-tidsreg-summary {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #f0f4f8;
+  border: 1px solid #d0dae4;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #1a2a3a;
+}
+
+.lectio-enhancer-tidsreg-summary-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: baseline;
+}
+
+.lectio-enhancer-tidsreg-weekline {
+  white-space: nowrap;
+}
+
+.lectio-enhancer-tidsreg-weeklabel {
+  font-weight: 600;
+}
+
+.lectio-enhancer-tidsreg-expected {
+  color: #4a5f73;
+  font-size: 0.92em;
+}
+
+.lectio-enhancer-tidsreg-summary-empty {
+  color: #5a6a7a;
+}
+
+.lectio-enhanced #s_m_Content_Content_TidsregInputGV tbody tr:not(:first-child):hover td {
+  background-color: rgba(74, 108, 247, 0.06);
+}
+
+.dark-mode .lectio-enhancer-tidsreg-summary {
+  background: #2a3340;
+  border-color: #3d4a5c;
+  color: #e8eef4;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-expected {
+  color: #a8b8c8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-summary-empty {
+  color: #9aacbc;
+}
+
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV tbody tr:not(:first-child):hover td {
+  background-color: rgba(74, 158, 255, 0.12) !important;
+}
+
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV input[id$="TidsregInputHoursTB_tb"],
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV input[id$="fromTimeCtrl_tb_tb"],
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV input[id$="toTimeCtrl_tb_tb"],
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV select[id$="TidsregInputTypeDD_dd"],
+.dark-mode .lectio-enhanced #s_m_Content_Content_TidsregInputGV input[id$="TidsregInputNoteTB_tb"] {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border-color: #505a68 !important;
+}
+
+/* Ugeoversigt (bund) + Lectio Enhancer ugedata-panel */
+.lectio-enhanced #s_m_Content_Content_SendToArea2 .ls-table-wrapper {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #d0dae4;
+  margin-top: 4px;
+}
+
+.lectio-enhanced #s_m_Content_Content_TidsregWeekReportGV {
+  font-variant-numeric: tabular-nums;
+}
+
+.lectio-enhanced #s_m_Content_Content_TidsregWeekReportGV tbody tr.ls-tidsreg-dagsdato td {
+  box-shadow: inset 3px 0 0 #4a6cf7;
+}
+
+.dark-mode .lectio-enhanced #s_m_Content_Content_SendToArea2 .ls-table-wrapper {
+  border-color: #3d4a5c;
+}
+
+.lectio-enhancer-tidsreg-weekdatapanel {
+  margin-top: 16px;
+  padding: 14px 16px 12px;
+  border-radius: 8px;
+  background: linear-gradient(165deg, #f6f8fc 0%, #eef2f8 100%);
+  border: 1px solid #c8d4e4;
+  color: #1a2a3a;
+}
+
+.lectio-enhancer-tidsreg-payroll-filters {
+  margin: 0 0 14px;
+  padding: 10px 12px 12px;
+  border: 1px solid #c8d4e4;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.lectio-enhancer-tidsreg-payroll-legend {
+  padding: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2d4158;
+}
+
+.lectio-enhancer-tidsreg-payroll-radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: stretch;
+}
+
+.lectio-enhancer-tidsreg-privacybar {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px dashed #9aacbc;
+  background: #fafbfd;
+}
+
+.lectio-enhancer-tidsreg-privacy-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #2d4158;
+  cursor: pointer;
+}
+
+.lectio-enhancer-tidsreg-privacy-opt input {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: #4a6cf7;
+}
+
+.lectio-enhancer-tidsreg-weekdatapanel--hide-money {
+  border-style: dashed;
+}
+
+.lectio-enhancer-tidsreg-payroll-opt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  max-width: 16rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #dce4ee;
+  background: #f9fbfd;
+  cursor: pointer;
+  flex: 1 1 11rem;
+}
+
+.lectio-enhancer-tidsreg-payroll-opt:has(input:checked) {
+  border-color: #4a6cf7;
+  background: #eef2ff;
+  box-shadow: 0 0 0 1px rgba(74, 108, 247, 0.25);
+}
+
+.lectio-enhancer-tidsreg-payroll-opt input {
+  margin: 0 0 4px;
+  accent-color: #4a6cf7;
+}
+
+.lectio-enhancer-tidsreg-payroll-opt-main {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a2a3a;
+}
+
+.lectio-enhancer-tidsreg-payroll-opt-sub {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #5a6f82;
+  word-break: break-word;
+}
+
+.lectio-enhancer-tidsreg-payroll-hint {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #3d5266;
+}
+
+.lectio-enhancer-tidsreg-weekdata-isoyear {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  vertical-align: middle;
+  border-radius: 3px;
+  background: #e4eaf2;
+  color: #3d5266;
+}
+
+.lectio-enhancer-tidsreg-weekdata-head {
+  margin-bottom: 12px;
+}
+
+.lectio-enhancer-tidsreg-weekdata-title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.lectio-enhancer-tidsreg-weekdata-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #3d5266;
+  max-width: 72ch;
+}
+
+.lectio-enhancer-tidsreg-weekdata-tablewrap {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #c8d4e4;
+  background: #fff;
+}
+
+.lectio-enhancer-tidsreg-weekdata-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.lectio-enhancer-tidsreg-weekdata-table th,
+.lectio-enhancer-tidsreg-weekdata-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e4eaf2;
+  vertical-align: top;
+}
+
+.lectio-enhancer-tidsreg-weekdata-table th {
+  background: #e8eef6;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lectio-enhancer-tidsreg-weekdata-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.lectio-enhancer-tidsreg-weekdata-num {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.lectio-enhancer-tidsreg-weekdata-money {
+  font-weight: 600;
+  color: #1e6b3a;
+}
+
+.lectio-enhancer-tidsreg-weekdata-detail {
+  font-size: 0.8rem;
+  color: #4a5f73;
+  max-width: 28rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lectio-enhancer-tidsreg-weekdata-tr--over45 td {
+  background: rgba(21, 101, 192, 0.07);
+}
+
+.lectio-enhancer-tidsreg-weekdata-tr--over td {
+  background: rgba(46, 125, 50, 0.06);
+}
+
+.lectio-enhancer-tidsreg-weekdata-tr--sum td {
+  background: #e8eef6;
+  font-size: 0.9rem;
+}
+
+.lectio-enhancer-tidsreg-weekdata-tr--sum .lectio-enhancer-tidsreg-weekdata-money {
+  color: #14532a;
+}
+
+.lectio-enhancer-tidsreg-diff--pos {
+  color: #1565c0;
+}
+
+.lectio-enhancer-tidsreg-diff--neg {
+  color: #c62828;
+}
+
+.lectio-enhancer-tidsreg-weekdata-empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #5a6a7a;
+}
+
+.lectio-enhancer-tidsreg-weekdata-disclaimer {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #6a7a8a;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdatapanel {
+  background: linear-gradient(165deg, #2a3340 0%, #232b36 100%);
+  border-color: #3d4a5c;
+  color: #e8eef4;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-filters {
+  background: #1e252e;
+  border-color: #3d4a5c;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-legend {
+  color: #c8d8e8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-opt {
+  background: #252d38;
+  border-color: #3d4a5c;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-opt:has(input:checked) {
+  border-color: #6b8cff;
+  background: #2a3350;
+  box-shadow: 0 0 0 1px rgba(107, 140, 255, 0.35);
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-opt-main {
+  color: #e8eef4;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-opt-sub {
+  color: #9aacbc;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-payroll-hint {
+  color: #a8b8c8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-privacybar {
+  border-color: #5a6a7a;
+  background: #252d38;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-privacy-opt {
+  color: #c8d8e8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-isoyear {
+  background: #3d4a5c;
+  color: #d0dce8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-meta {
+  color: #a8b8c8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-tablewrap {
+  border-color: #3d4a5c;
+  background: #1e252e;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-table th,
+.dark-mode .lectio-enhancer-tidsreg-weekdata-table td {
+  border-bottom-color: #3d4a5c;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-table th {
+  background: #2d3744;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-detail {
+  color: #a8b8c8;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-money {
+  color: #7dce9a;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-tr--over45 td {
+  background: rgba(144, 202, 249, 0.1);
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-tr--over td {
+  background: rgba(125, 206, 154, 0.08);
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-tr--sum td {
+  background: #2d3744;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-tr--sum .lectio-enhancer-tidsreg-weekdata-money {
+  color: #9ae6b4;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-diff--pos {
+  color: #90caf9;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-diff--neg {
+  color: #ef9a9a;
+}
+
+.dark-mode .lectio-enhancer-tidsreg-weekdata-disclaimer {
+  color: #8a9aaa;
+}

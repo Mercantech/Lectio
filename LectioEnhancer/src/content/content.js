@@ -4,7 +4,8 @@ function enhanceLectio() {
   LectioEnhancer.initDarkMode();
   createUnifiedDrawer();
   LectioEnhancer.enhanceSchedulePage();
-  
+  LectioEnhancer.enhanceTidsregistrering();
+
   // Initialiser automatisk skjuling af ls-dfv-100-IG elementer
   LectioEnhancer.initAutoHideObserver();
   
